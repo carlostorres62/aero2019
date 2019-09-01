@@ -26,8 +26,8 @@ if not shelter:
 else:
     shelter = "Yes"
 
-frame1 = Frame(master, height=500, width=580, bg="red")
-frame2 = Frame(master, height=500, width=20, bg="blue")
+frame1 = Frame(master, height=500, width=580)
+frame2 = Frame(master, height=500, width=20)
 
 # frames doesn't resize
 frame1.grid_propagate(0)
