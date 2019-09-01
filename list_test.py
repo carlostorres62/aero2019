@@ -4,6 +4,7 @@ from tkinter.ttk import *
 master = Tk()
 master.title("Aero Design")
 master.geometry("570x357+375+50")  # screen position (x, y)
+master.resizable(False, False)  # window doesn't resize
 
 # test variables
 cda, water, shelter = False, False, False
