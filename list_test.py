@@ -1,14 +1,14 @@
 from tkinter import *
-from tkinter.ttk import *
+from tkinter.ttk import Scrollbar, Button, Treeview, Style
 
 master = Tk()
 master.title("Aero Design")
 master.geometry("570x357+375+50")  # screen position (x, y)
 master.resizable(False, False)  # window doesn't resize
 
-# test variables
-cda, water, shelter = False, False, False
-alt, weight, time = 0, 0, 0
+# master variables
+cda, water, shelter = False, False, False  # check BooleanVar
+alt, weight, t = 0, 0, 0
 
 if not cda:
     cda = "No"
@@ -33,7 +33,7 @@ def table():  # function if button is pressed (command)
 
     # variables set for the table
     flight = [("CDA", cda), ("Water", water), ("Shelter", shelter), ("Altitude", alt),
-              ("Weight", weight), ("Time", time), ("Test 1", cda), ("Test 2", cda),
+              ("Weight", weight), ("Time", t), ("Test 1", cda), ("Test 2", cda),
               ("Test 3", alt), ("Test 4", alt)]
 
     # sets the style of the strings in Treeview
@@ -46,7 +46,7 @@ def table():  # function if button is pressed (command)
 
     # places the heading on gui
     tree.heading("#0", text="Components", anchor=CENTER)
-    tree.heading("#1", text="Variables", anchor=CENTER)
+    tree.heading("#1", text="Flight 1", anchor=CENTER)
 
     # places the text and values in the table created
     index = 0
@@ -65,4 +65,4 @@ def table():  # function if button is pressed (command)
 button = Button(master, text="Flight Data", width=20, command=table)
 button.place(relx=0.5, rely=0.5, anchor=CENTER)  # positions the button
 
-master.mainloop()
+# mainloop()
