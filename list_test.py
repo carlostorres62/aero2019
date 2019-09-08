@@ -1,68 +1,94 @@
-from tkinter import *
-from tkinter.ttk import Scrollbar, Button, Treeview, Style
-
-master = Tk()
-master.title("Aero Design")
-master.geometry("570x357+375+50")  # screen position (x, y)
-master.resizable(False, False)  # window doesn't resize
-
-# master variables
-cda, water, shelter = False, False, False  # check BooleanVar
-alt, weight, t = 0, 0, 0
-
-if not cda:
-    cda = "No"
-else:
-    cda = "Yes"
-if not water:
-    water = "No"
-else:
-    water = "Yes"
-if not shelter:
-    shelter = "No"
-else:
-    shelter = "Yes"
+import tkinter as tk
+from tkinter import ttk
+import time
+from random import *
 
 
-def table():  # function if button is pressed (command)
+class ListTable:
 
-    # scrolls vertically with orient and yscrollcommand function
-    scrollbar = Scrollbar(master, orient=VERTICAL)
+    def __init__(self, masterList):
+        self.masterList = masterList
+        self.masterList.title("Aero Design")
+        self.masterList.geometry("825x357+200+50")  # screen position (x, y)
+        # self.masterList.resizable(False, False)  # window doesn't resize
+        self.style = ttk.Style()
 
-    tree = Treeview(master, height=5, columns="One", yscrollcommand=scrollbar.set)
+        # scrolls vertically with orient and yscrollcommand function
+        self.scrollbar = ttk.Scrollbar(masterList, orient=tk.VERTICAL)
+        self.tree = ttk.Treeview(masterList, height=5, columns="One", yscrollcommand=self.scrollbar.set)
 
-    # variables set for the table
-    flight = [("CDA", cda), ("Water", water), ("Shelter", shelter), ("Altitude", alt),
-              ("Weight", weight), ("Time", t), ("Test 1", cda), ("Test 2", cda),
-              ("Test 3", alt), ("Test 4", alt)]
+        # master variables
+        self.cda, self.water, self.shelter = True, False, False
+        self.altL, self.weight, self.tL = 0, 0, 0
+        self.tP, self.d1, self.d2 = 0, 0, 0
+        self.altP = tk.IntVar()
+        self.altP.set(randint(0, 100))
 
-    # sets the style of the strings in Treeview
-    style = Style()
-    style.configure("Treeview.Heading", font=("Helvetica", 35))  # style for the heading
-    style.configure("Treeview", font=("Helvetica", 30), rowheight=60)  # style for the rest of the table
+        self.flight = [("CDA", self.cda), ("Water", self.water), ("Shelter", self.shelter), ("Altitude", self.altL),
+                       ("Weight", self.weight), ("Time", self.tL), ("Test 1", self.cda), ("Test 2", self.cda),
+                       ("Test 3", self.altL), ("Test 4", self.altL)]
 
-    tree.column("#0", width=275, minwidth=275)
-    tree.column("#1", width=275, minwidth=275, anchor=CENTER)
+        self.data = ttk.Label(self.masterList, text="DATA:", font=("Helvetica", 20))
+        self.altitude = ttk.Label(self.masterList, text="Altitude:", font=("Helvetica", 20), style="Label")
+        self.altitudeVar = ttk.Label(self.masterList, textvariable="0", font=("Helvetica", 20))
+        self.time = ttk.Label(self.masterList, text="Time:", font=("Helvetica", 20), style="Label")
+        self.timeVar = ttk.Label(self.masterList, text=self.tP, font=("Helvetica", 20))
+        self.deploy1 = ttk.Label(self.masterList, text="Deploy 1:", font=("Helvetica", 20), style="Label")
+        self.deploy1Var = ttk.Label(self.masterList, text=self.d1, font=("Helvetica", 20))
+        self.deploy2 = ttk.Label(self.masterList, text="Deploy 2:", font=("Helvetica", 20), style="Label")
+        self.deploy2Var = ttk.Label(self.masterList, text=self.d2, font=("Helvetica", 20))
 
-    # places the heading on gui
-    tree.heading("#0", text="Components", anchor=CENTER)
-    tree.heading("#1", text="Flight 1", anchor=CENTER)
+        # self.data.grid(row=0, column=0)
+        self.altitude.grid(row=0, column=2, sticky=tk.N)
+        self.altitudeVar.grid(row=0, column=3, sticky=tk.N)
+        self.time.grid(row=0, column=2)
+        self.timeVar.grid(row=0, column=3)
+        self.deploy1.grid(row=0, column=2, sticky=tk.S)
+        self.deploy1Var.grid(row=0, column=3, sticky=tk.S)
+        # self.deploy2.grid(row=0, column=7)
+        # self.deploy2Var.grid(row=0, column=8)
 
-    # places the text and values in the table created
-    index = 0
-    for string, var in flight:
-        tree.insert("", index, text=string, values=var)
-        index += 1
+    def table(self):
 
-    scrollbar.config(command=tree.yview)
+        # variables set for the table
 
-    tree.grid(row=0, column=0, sticky=W)
-    scrollbar.grid(row=0, column=1, sticky=N + S)  # positions the scrollbar at the right (sticky = coordinates)
+        self.tree.column("#0", width=275, minwidth=275)
+        self.tree.column("#1", width=275, minwidth=275, anchor=tk.CENTER)
 
-    button.destroy()  # button disappears
+        # places the heading on gui
+        self.tree.heading("#0", text="Components", anchor=tk.CENTER)
+        self.tree.heading("#1", text="Flight 1", anchor=tk.CENTER)
+
+        # places the text and values in the table created
+        index = 0
+        for string, var in self.flight:
+            self.tree.insert("", index, text=string, values=var)
+            index += 1
+
+        self.scrollbar.config(command=self.tree.yview)
+
+        self.tree.grid(row=0, column=0, sticky=tk.W)
+        self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
+        # positions the scrollbar at the right (sticky=coordinates)
 
 
-button = Button(master, text="Flight Data", width=20, command=table)
-button.place(relx=0.5, rely=0.5, anchor=CENTER)  # positions the button
+    def update(self):
+        self.masterList.after(1500, self.altP.set(randint(0, 100)))
+        # self.altP.set(randint(0, 100))
+        # self.tP.set(randint(0, 100))
+        # self.d1.set(randint(0, 100))
+        # self.d2.set(randint(0, 100))
+        # self.masterList.after(1500, self.update)
 
-# mainloop()
+    def look(self):
+        # sets the style of the strings in Treeview
+        self.style.configure("Treeview.Heading", font=("Helvetica", 35))  # style for the heading
+        self.style.configure("Treeview", font=("Helvetica", 30), rowheight=60)  # style for the rest of the table
+
+
+
+master = ListTable(tk.Tk())
+master.table()
+master.look()
+# master.update()
+tk.mainloop()

@@ -1,44 +1,50 @@
-from tkinter import *
+import tkinter as tk
+from tkinter import ttk
 from random import *
 
-master = Tk()
-master.title("Payloads")
-master.geometry("740x50+300+450")
 
-alt, t, d1, d2 = StringVar(), StringVar(), StringVar(), StringVar()
+class Payload:
 
-data = Label(master, text="DATA:", borderwidth=10, font=("Helvetica", 20), fg="red")
-altitude = Label(master, text="Altitude:", borderwidth=1, font=("Helvetica", 20), fg="black")
-altitudeVar = Label(master, textvariable=alt, borderwidth=10, font=("Helvetica", 20), fg="blue")
-time = Label(master, text="Time:", borderwidth=1, font=("Helvetica", 20), fg="black")
-timeVar = Label(master, textvariable=t, borderwidth=10, font=("Helvetica", 20), fg="blue")
-deploy1 = Label(master, text="Deploy 1:", borderwidth=1, font=("Helvetica", 20), fg="black")
-deploy1Var = Label(master, textvariable=d1, borderwidth=10, font=("Helvetica", 20), fg="blue")
-deploy2 = Label(master, text="Deploy 2:", borderwidth=1, font=("Helvetica", 20), fg="black")
-deploy2Var = Label(master, textvariable=d2, borderwidth=10, font=("Helvetica", 20), fg="blue")
+    def __init__(self, masterPayload):
+        self.masterPayload = masterPayload
+        self.masterPayload.title("Payloads")
+        self.masterPayload.geometry("740x50+300+450")
+        self.style = ttk.Style()
+
+        self.altP, self.tP, self.d1, self.d2 = 0, 0, 0, 0
+
+        self.data = ttk.Label(self.masterPayload, text="DATA:", font=("Helvetica", 20))
+        self.altitude = ttk.Label(self.masterPayload, text="Altitude:", font=("Helvetica", 20), style="Label")
+        self.altitudeVar = ttk.Label(self.masterPayload, text=self.altP, font=("Helvetica", 20))
+        self.time = ttk.Label(self.masterPayload, text="Time:", font=("Helvetica", 20), style="Label")
+        self.timeVar = ttk.Label(self.masterPayload, text=self.tP, font=("Helvetica", 20))
+        self.deploy1 = ttk.Label(self.masterPayload, text="Deploy 1:", font=("Helvetica", 20), style="Label")
+        self.deploy1Var = ttk.Label(self.masterPayload, text=self.d1, font=("Helvetica", 20))
+        self.deploy2 = ttk.Label(self.masterPayload, text="Deploy 2:", font=("Helvetica", 20), style="Label")
+        self.deploy2Var = ttk.Label(self.masterPayload, text=self.d2, font=("Helvetica", 20))
+
+        self.data.grid(row=0, column=0)
+        self.altitude.grid(row=0, column=1)
+        self.altitudeVar.grid(row=0, column=2)
+        self.time.grid(row=0, column=3)
+        self.timeVar.grid(row=0, column=4)
+        self.deploy1.grid(row=0, column=5)
+        self.deploy1Var.grid(row=0, column=6)
+        self.deploy2.grid(row=0, column=7)
+        self.deploy2Var.grid(row=0, column=8)
+
+    # def update(self):
+    #     self.altP.set(randint(0, 100))
+    #     self.tP.set(randint(0, 100))
+    #     self.d1.set(randint(0, 100))
+    #     self.d2.set(randint(0, 100))
+    #     self.masterPayload.after(1500, self.update)
+
+    def look(self):
+        self.style.configure("Label", foreground="red")
 
 
-def update():
-    alt.set(randint(0, 100))
-    t.set(randint(0, 100))
-    d1.set(randint(0, 100))
-    d2.set(randint(0, 100))
-    master.after(1500, update)
-
-
-def newLabel(label, numRow, numCol):
-    label.grid(row=numRow, column=numCol)
-
-
-newLabel(data, 0, 0)
-newLabel(altitude, 0, 1)
-newLabel(altitudeVar, 0, 2)
-newLabel(time, 0, 3)
-newLabel(timeVar, 0, 4)
-newLabel(deploy1, 0, 5)
-newLabel(deploy1Var, 0, 6)
-newLabel(deploy2, 0, 7)
-newLabel(deploy2Var, 0, 8)
-
-update()
-# mainloop()
+master = Payload(tk.Tk())
+# master.update()
+master.look()
+# tk.mainloop()
