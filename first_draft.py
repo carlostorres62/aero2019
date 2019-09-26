@@ -19,6 +19,7 @@ class Draft1:
         self.style = ttk.Style()
         self.style.configure("Treeview.Heading", font=(None, 15))   # Configures the size of the headings
 
+        #Jorge
         self.height = 20         # Sets height size for tree
         self.tree["height"] = self.height
         self.tree["columns"] = ("one", "two", "three", "four", "five", "six")
@@ -31,7 +32,7 @@ class Draft1:
         self.tree.heading("six", text="Weight", anchor=tk.CENTER)
 
         # Carlos
-        self.altP, self.tP, self.d1, self.d2 = tk.IntVar(), tk.StringVar(), tk.IntVar(), tk.IntVar()
+        self.altP, self.tP, self.d1, self.d2, self.d3 = tk.IntVar(), tk.StringVar(), tk.IntVar(), tk.IntVar(), tk.IntVar()
 
         self.data = ttk.Label(master, text="DATA:", font=("Helvetica", 25), style="R.TLabel")
         self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 20), style="B.TLabel")
@@ -77,6 +78,7 @@ class Draft1:
         self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
 
     def real_time(self):
+        #Jorge
         self.hour = dt.datetime.now().hour  # Obtains the current hour
         self.minute = dt.datetime.now().minute  # Obtains the current minute
         self.second = dt.datetime.now().second  # Obtains the current second
@@ -98,22 +100,29 @@ class Draft1:
         self.altP.set(randint(0, 100))
         self.d1.set(randint(0, 100))
         self.d2.set(randint(0, 100))
+        self.d3.set(randint(0, 100))
         self.tP.set(self.strTime)
         # self.master.after(1000, self.refresh)
 
+    #Jorge
     def table(self):
         nums = [i for i in range(51)]  # List comprehension to obtain list of numbers/ can be changed to desired number
+        cda = False
+        water = False
+        shelter = False
         for i in nums:
             if i == 0:
                 pass
             else:
-                for hr, minute, sec in self.list:
+                #for hr, minute, sec in self.list:
                     # Inserts the number of data and current time to tree
-                    self.tree.insert("", i, text=str(i), values=(hr + ":" + minute + ":" + sec))
+                self.tree.insert("", tk.END, text=str(i), values=((self.strTime), str(self.altP.get()),
+                                                        cda, water, shelter, str(self.d3.get())))
                 self.list = []  # Resets the time list
                 self.real_time()
             self.master.after(1000, self.tree.update(), self.refresh())
 
+    #Jorge
     def handle_click(self, event):         # Function to prevent resize on the headings
         if self.tree.identify_region(event.x, event.y) == "separator":
             return "break"
