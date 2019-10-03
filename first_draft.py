@@ -5,10 +5,11 @@ import datetime as dt
 from random import *
 from serial import Serial
 
+
 class Draft1:
     def __init__(self, master):
 
-        #Standard configuration
+        # Standard configuration
         self.master = master
         self.master.title("Aero Design")
         self.master.geometry("1000x425+125+50")
@@ -19,11 +20,11 @@ class Draft1:
         self.start_time = time.time()
 
         self.style = ttk.Style()
-        self.style.configure("Treeview.Heading", font=(None, 15))   # Configures the size of the headings
+        self.style.configure("Treeview.Heading", font=(None, 15))  # Configures the size of the headings
 
-        #Jorge
-        #Configuration of the tree's appeareance
-        self.height = 20         # Sets height size for tree
+        # Jorge
+        # Configuration of the tree's appeareance
+        self.height = 20  # Sets height size for tree
         self.tree["height"] = self.height
         self.tree["columns"] = ("one", "two", "three", "four", "five", "six")
         self.tree.heading("#0", text="Data", anchor=tk.CENTER)
@@ -35,7 +36,7 @@ class Draft1:
         self.tree.heading("six", text="Weight", anchor=tk.CENTER)
 
         # Carlos
-        #Configuration of the GUI's appearence
+        # Configuration of the GUI's appearence
         self.altP, self.tP, self.cda_D, self.water_D, self.shelter_D, self.weight_D = tk.IntVar(), tk.StringVar(), tk.StringVar(), \
                                                                                       tk.StringVar(), tk.StringVar(), tk.IntVar()
 
@@ -54,7 +55,7 @@ class Draft1:
         self.style.configure("B.TLabel", foreground="Blue")
         self.style.configure("R.TLabel", foreground="Red")
 
-        #Variables needed for program functionality
+        # Variables needed for program functionality
         self.start = "On"
         self.hour = 0
         self.minute = 0
@@ -65,10 +66,10 @@ class Draft1:
         self.strTime = ""
         self.arduinoData = ""
         self.dataArray = []
-        #Comment when Arduino is not connected, "COM" changes depending on computer port
-        #self.serialData = Serial("COM4", 9600)
+        # Comment when Arduino is not connected, "COM" changes depending on computer port
+        # self.serialData = Serial("COM4", 9600)
 
-        #Controls structure and localization of GUI
+        # Controls structure and localization of GUI
         self.data.place(relx=3 / 4, rely=0.05)
         self.altitude.place(relx=3 / 4, rely=1 / 6)
         self.altitudeVar.place(relx=0.9, rely=1 / 6)
@@ -82,9 +83,9 @@ class Draft1:
         self.shelterDeployVar.place(relx=0.9, rely=5 / 6)
 
         # David
-        #Configuration of scrollbar
+        # Configuration of scrollbar
         col_width = 100
-        self.tree.column("#0", anchor=tk.CENTER, width=col_width-50)
+        self.tree.column("#0", anchor=tk.CENTER, width=col_width - 50)
         for col in self.tree["columns"]:
             self.tree.column(col, anchor=tk.CENTER, width=col_width)
 
@@ -94,7 +95,7 @@ class Draft1:
         self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
 
     def real_time(self):
-        #Jorge
+        # Jorge
         self.hour = dt.datetime.now().hour  # Obtains the current hour
         self.minute = dt.datetime.now().minute  # Obtains the current minute
         self.second = dt.datetime.now().second  # Obtains the current second
@@ -110,18 +111,17 @@ class Draft1:
             self.second = str(self.second)
         self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
 
-
     def refresh(self):
         # Carlos
         self.altP.set(randint(0, 100))
-        self.cda_D.set("False")
-        self.water_D.set("False")
-        self.shelter_D.set("False")
+        self.cda_D.set(0)
+        self.water_D.set(0)
+        self.shelter_D.set(0)
         self.weight_D.set(randint(0, 100))
         self.tP.set(self.strTime)
         # self.master.after(1000, self.refresh)
 
-    #Jorge
+    # Jorge
     def table(self):
         nums = [i for i in range(51)]  # List comprehension to obtain list of numbers/ can be changed to desired number
         if self.cda_D == 1:
@@ -140,17 +140,15 @@ class Draft1:
             if i == 0:
                 pass
             else:
-                    # Inserts the number of data and current time to tree
+                # Inserts the number of data and current time to tree
 
                 self.real_time()
-                self.tree.insert("", tk.END, text=str(i), values=((self.strTime), str(self.altP.get()),
-                                                        cda, water, shelter, str(self.weight_D.get())))
-                self.master.after(1000, self.refresh(), self.tree.update())
-                #time.sleep(1)
+                self.tree.insert("", tk.END, text=str(i), values=(self.strTime, str(self.altP.get()),
+                                                                  cda, water, shelter, str(self.weight_D.get())))
+                self.master.after(1000, self.refresh(), self.tree.update())  # 937
+                # time.sleep(1)
 
-
-
-    #Function to receive data from Arduino and set variables
+    # Function to receive data from Arduino and set variables
     def ardData(self):
         while self.start == "On":
             while self.serialData.inWaiting() == 0:
@@ -162,15 +160,15 @@ class Draft1:
             self.water_D.set(float(self.dataArray[2]))
             self.shelter_D.set(float(self.dataArray[3]))
 
-
-    #Jorge
-    def handle_click(self, event):         # Function to prevent resize on the headings
+    # Jorge
+    def handle_click(self, event):  # Function to prevent resize on the headings
         if self.tree.identify_region(event.x, event.y) == "separator":
             return "break"
 
 
 root = Draft1(tk.Tk())
+root.refresh()
 root.table()
-root.ardData()
+# root.ardData()
 root.tree.bind('<Button-1>', root.handle_click)
 tk.mainloop()
