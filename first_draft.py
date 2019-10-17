@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 import time
 import datetime as dt
-from random import *
 from serial import Serial
+
+serial = Serial("COM6", 9600)
 
 
 class Draft1:
@@ -37,8 +38,11 @@ class Draft1:
 
         # Carlos
         # Configuration of the GUI's appearence
-        self.altP, self.tP, self.cda_D, self.water_D, self.shelter_D, self.weight_D = tk.IntVar(), tk.StringVar(), tk.StringVar(), \
-                                                                                      tk.StringVar(), tk.StringVar(), tk.IntVar()
+        self.altP, self.tP, self.cda_D, self.water_D, self.shelter_D, self.weight_D = tk.StringVar(), tk.StringVar(), \
+                                                                                      tk.StringVar(), tk.StringVar(), \
+                                                                                      tk.StringVar(), tk.StringVar()
+
+        self.dataNum = tk.StringVar()
 
         self.data = ttk.Label(master, text="DATA:", font=("Helvetica", 25), style="R.TLabel")
         self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 20), style="B.TLabel")
@@ -65,9 +69,6 @@ class Draft1:
         self.sTime = str(self.second)
         self.strTime = ""
         self.arduinoData = ""
-        self.dataArray = []
-        # Comment when Arduino is not connected, "COM" changes depending on computer port
-        # self.serialData = Serial("COM4", 9600)
 
         # Controls structure and localization of GUI
         self.data.place(relx=3 / 4, rely=0.05)
@@ -94,6 +95,8 @@ class Draft1:
         self.tree.grid(row=0, column=0, sticky=tk.W)  # positions the scrollbar at the right (sticky = coordinates)
         self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
 
+        self.ard_data()
+
     def real_time(self):
         # Jorge
         self.hour = dt.datetime.now().hour  # Obtains the current hour
@@ -109,56 +112,41 @@ class Draft1:
             self.second = "0" + str(self.second)  # If second is 5 it would show "05"
         else:
             self.second = str(self.second)
-        self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
 
-    def refresh(self):
-        # Carlos
-        self.altP.set(randint(0, 100))
-        self.cda_D.set(0)
-        self.water_D.set(0)
-        self.shelter_D.set(0)
-        self.weight_D.set(randint(0, 100))
+        self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
         self.tP.set(self.strTime)
-        # self.master.after(1000, self.refresh)
 
     # Jorge
     def table(self):
-        nums = [i for i in range(51)]  # List comprehension to obtain list of numbers/ can be changed to desired number
-        if self.cda_D == 1:
-            cda = True
-        else:
-            cda = False
-        if self.water_D == 1:
-            water = True
-        else:
-            water = False
-        if self.shelter_D == 1:
-            shelter = True
-        else:
-            shelter = False
-        for i in nums:
-            if i == 0:
-                pass
-            else:
-                # Inserts the number of data and current time to tree
-
-                self.real_time()
-                self.tree.insert("", tk.END, text=str(i), values=(self.strTime, str(self.altP.get()),
-                                                                  cda, water, shelter, str(self.weight_D.get())))
-                self.master.after(1000, self.refresh(), self.tree.update())  # 937
-                # time.sleep(1)
+        self.tree.bind('<Button-1>', self.handle_click)
+        # Inserts the number of data and current time to tree
+        self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get(), self.cda_D.get(),
+                                                                   self.water_D.get(), self.shelter_D.get(),
+                                                                   self.weight_D.get()))
+        self.real_time()
+        self.tree.update()
 
     # Function to receive data from Arduino and set variables
-    def ardData(self):
+    def ard_data(self):
         while self.start == "On":
-            while self.serialData.inWaiting() == 0:
+            while serial.inWaiting() == 0:
+                print("Waiting")
+                time.sleep(1)
                 pass
-            self.arduinoData = Serial.readline()
-            self.dataArray = self.arduinoData.split()
-            self.altP.set(float(self.dataArray[0]))
-            self.cda_D.set(float(self.dataArray[1]))
-            self.water_D.set(float(self.dataArray[2]))
-            self.shelter_D.set(float(self.dataArray[3]))
+            self.arduinoData = serial.readline()
+            self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
+            self.arduinoData = str(self.arduinoData)
+            self.arduinoData = self.arduinoData.split(",")
+            self.dataNum.set(self.arduinoData[0])
+            self.altP.set(self.arduinoData[1])
+            self.cda_D.set(self.arduinoData[2])
+            self.water_D.set(self.arduinoData[3])
+            self.shelter_D.set(self.arduinoData[4])
+            self.weight_D.set(self.arduinoData[5])
+            print(self.arduinoData)
+            self.real_time()
+            self.table()
+            self.master.update()
 
     # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
@@ -167,8 +155,4 @@ class Draft1:
 
 
 root = Draft1(tk.Tk())
-root.refresh()
-root.table()
-# root.ardData()
-root.tree.bind('<Button-1>', root.handle_click)
 tk.mainloop()
