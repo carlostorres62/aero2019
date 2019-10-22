@@ -4,7 +4,7 @@ import time
 import datetime as dt
 from serial import Serial
 
-serial = Serial("COM6", 9600)
+serial = Serial("/dev/cu.usbmodem146201", 9600)
 
 
 class Draft1:
@@ -72,6 +72,10 @@ class Draft1:
         self.sTime = str(self.second)
         self.strTime = ""
         self.arduinoData = ""
+        self.cda_altitude = -1
+        self.water_altitude = -1
+        self.shelter_altitude = -1
+
 
         # Controls structure and localization of GUI
         self.data.place(relx=0.55, rely=0.05)
@@ -142,14 +146,38 @@ class Draft1:
             self.arduinoData = self.arduinoData.split(",")
             self.dataNum.set(self.arduinoData[0])
             self.altP.set(self.arduinoData[1])
-            self.cda_D.set(self.arduinoData[2])
-            self.water_D.set(self.arduinoData[3])
-            self.shelter_D.set(self.arduinoData[4])
+            if self.arduinoData[2] == 0:
+                self.cda_D.set(0)
+            else:
+                if self.cda_altitude == -1:
+                    self.cda_altitude = self.altP
+                    self.cda_D.set(self.cda_altitude)
+                else:
+                    pass
+            if self.arduinoData[3] == 0:
+                self.water_D.set(0)
+            else:
+                if self.water_altitude == -1:
+                    self.water_altitude = self.altP
+                    self.water_D.set(self.water_altitude)
+                else:
+                    pass
+
+            if self.arduinoData[4] == 0:
+                self.shelter_D.set(0)
+            else:
+                if self.shelter_altitude == -1:
+                    self.shelter_altitude = self.altP
+                    self.shelter_D.set(self.shelter_altitude)
+                else:
+                    pass
             self.weight_D.set(self.arduinoData[5])
             print(self.arduinoData)
             self.real_time()
             self.table()
             self.master.update()
+
+
 
     # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
