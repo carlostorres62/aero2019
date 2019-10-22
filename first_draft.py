@@ -11,9 +11,12 @@ class Draft1:
     def __init__(self, master):
 
         # Standard configuration
+
         self.master = master
         self.master.title("Aero Design")
-        self.master.geometry("1000x425+125+50")
+
+        self.w, self.h = self.master.winfo_screenwidth(), self.master.winfo_screenheight()
+        self.master.geometry("%dx%d+0+0" % (self.w, self.h))
         self.master.resizable(False, False)
 
         self.scrollbar = ttk.Scrollbar(master, orient=tk.VERTICAL)
@@ -25,7 +28,7 @@ class Draft1:
 
         # Jorge
         # Configuration of the tree's appeareance
-        self.height = 20  # Sets height size for tree
+        self.height = self.h  # Sets height size for tree
         self.tree["height"] = self.height
         self.tree["columns"] = ("one", "two", "three", "four", "five", "six")
         self.tree.heading("#0", text="Data", anchor=tk.CENTER)
@@ -44,17 +47,17 @@ class Draft1:
 
         self.dataNum = tk.StringVar()
 
-        self.data = ttk.Label(master, text="DATA:", font=("Helvetica", 25), style="R.TLabel")
-        self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 20), style="B.TLabel")
-        self.altitudeVar = ttk.Label(master, textvariable=self.altP, font=("Helvetica", 20))
-        self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 20), style="B.TLabel")
-        self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 20))
-        self.cdaDeploy = ttk.Label(master, text="CDA:", font=("Helvetica", 20), style="B.TLabel")
-        self.cdaDeployVar = ttk.Label(master, textvariable=self.cda_D, font=("Helvetica", 20))
-        self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 20), style="B.TLabel")
-        self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 20))
-        self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 20), style="B.TLabel")
-        self.shelterDeployVar = ttk.Label(master, textvariable=self.shelter_D, font=("Helvetica", 20))
+        self.data = ttk.Label(master, text="DATA:", font=("Helvetica", 60), style="R.TLabel")
+        self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 60), style="B.TLabel")
+        self.altitudeVar = ttk.Label(master, textvariable=self.altP, font=("Helvetica", 60))
+        self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 60), style="B.TLabel")
+        self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 60))
+        self.cdaDeploy = ttk.Label(master, text="CDA:", font=("Helvetica", 60), style="B.TLabel")
+        self.cdaDeployVar = ttk.Label(master, textvariable=self.cda_D, font=("Helvetica", 60))
+        self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 60), style="B.TLabel")
+        self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 60))
+        self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 60), style="B.TLabel")
+        self.shelterDeployVar = ttk.Label(master, textvariable=self.shelter_D, font=("Helvetica", 60))
 
         self.style.configure("B.TLabel", foreground="Blue")
         self.style.configure("R.TLabel", foreground="Red")
@@ -71,17 +74,17 @@ class Draft1:
         self.arduinoData = ""
 
         # Controls structure and localization of GUI
-        self.data.place(relx=3 / 4, rely=0.05)
-        self.altitude.place(relx=3 / 4, rely=1 / 6)
-        self.altitudeVar.place(relx=0.9, rely=1 / 6)
-        self.timeLabel.place(relx=3 / 4, rely=2 / 6)
-        self.timeVar.place(relx=0.85, rely=2 / 6)
-        self.cdaDeploy.place(relx=3 / 4, rely=3 / 6)
-        self.cdaDeployVar.place(relx=0.9, rely=3 / 6)
-        self.waterDeploy.place(relx=3 / 4, rely=4 / 6)
-        self.waterDeployVar.place(relx=0.9, rely=4 / 6)
-        self.shelterDeploy.place(relx=3 / 4, rely=5 / 6)
-        self.shelterDeployVar.place(relx=0.9, rely=5 / 6)
+        self.data.place(relx=0.55, rely=0.05)
+        self.altitude.place(relx=0.55, rely=1 / 6)
+        self.altitudeVar.place(relx=0.8, rely=1 / 6)
+        self.timeLabel.place(relx=0.55, rely=2 / 6)
+        self.timeVar.place(relx=0.75, rely=2 / 6)
+        self.cdaDeploy.place(relx=0.55, rely=3 / 6)
+        self.cdaDeployVar.place(relx=0.8, rely=3 / 6)
+        self.waterDeploy.place(relx=0.55, rely=4 / 6)
+        self.waterDeployVar.place(relx=0.8, rely=4 / 6)
+        self.shelterDeploy.place(relx=0.55, rely=5 / 6)
+        self.shelterDeployVar.place(relx=0.8, rely=5 / 6)
 
         # David
         # Configuration of scrollbar
