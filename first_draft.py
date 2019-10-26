@@ -4,24 +4,24 @@ import time
 import datetime as dt
 from serial import Serial
 
-serial = Serial("/dev/cu.usbmodem144201", 9600)
+serial = Serial("COM6", 9600)
 
 
-class Draft1:
+class Flight1:
     def __init__(self, master):
 
         # Standard configuration
-
         self.master = master
         self.master.title("Aero Design")
 
+        # width and height of the respective computer
         self.w, self.h = self.master.winfo_screenwidth(), self.master.winfo_screenheight()
         self.master.geometry("%dx%d+0+0" % (self.w, self.h))
         self.master.resizable(False, False)
 
+        # Scrollbar and table initialization
         self.scrollbar = ttk.Scrollbar(master, orient=tk.VERTICAL)
         self.tree = ttk.Treeview(master, height=5, columns=5, yscrollcommand=self.scrollbar.set)
-        self.start_time = time.time()
 
         self.style = ttk.Style()
         self.style.configure("Treeview.Heading", font=(None, 15))  # Configures the size of the headings
@@ -40,12 +40,10 @@ class Draft1:
         self.tree.heading("six", text="Weight", anchor=tk.CENTER)
 
         # Carlos
-        # Configuration of the GUI's appearence
-        self.altP, self.tP, self.cda_D, self.water_D, self.shelter_D, self.weight_D = tk.StringVar(), tk.StringVar(), \
-                                                                                      tk.StringVar(), tk.StringVar(), \
-                                                                                      tk.StringVar(), tk.StringVar()
-
-        self.dataNum = tk.StringVar()
+        # Configuration of the GUI's appearance
+        self.dataNum, self.altP, self.tP = tk.StringVar(), tk.StringVar(), tk.StringVar()
+        self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
+        self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
 
         self.data = ttk.Label(master, text="DATA:", font=("Helvetica", 60), style="R.TLabel")
         self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 60), style="B.TLabel")
@@ -53,7 +51,7 @@ class Draft1:
         self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 60), style="B.TLabel")
         self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 60))
         self.cdaDeploy = ttk.Label(master, text="CDA:", font=("Helvetica", 60), style="B.TLabel")
-        self.cdaDeployVar = ttk.Label(master, textvariable=self.cda_D, font=("Helvetica", 60))
+        self.cdaDeployVar = ttk.Label(master, textvariable=self.cda_D1, font=("Helvetica", 60))
         self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 60), style="B.TLabel")
         self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 60))
         self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 60), style="B.TLabel")
@@ -62,8 +60,14 @@ class Draft1:
         self.style.configure("B.TLabel", foreground="Blue")
         self.style.configure("R.TLabel", foreground="Red")
 
-        # Variables needed for program functionality
+        # Arduino variables
         self.start = "On"
+        self.arduinoData = ""
+        self.cda_altitude = -1
+        self.water_altitude = -1
+        self.shelter_altitude = -1
+
+        # Time variables
         self.hour = 0
         self.minute = 0
         self.second = 0
@@ -71,13 +75,8 @@ class Draft1:
         self.mTime = str(self.minute)
         self.sTime = str(self.second)
         self.strTime = ""
-        self.arduinoData = ""
-        self.cda_altitude = -1
-        self.water_altitude = -1
-        self.shelter_altitude = -1
 
-
-        # Controls structure and localization of GUI
+        # Sets the position of labels in GUI
         self.data.place(relx=0.55, rely=0.05)
         self.altitude.place(relx=0.55, rely=1 / 6)
         self.altitudeVar.place(relx=0.8, rely=1 / 6)
@@ -102,6 +101,7 @@ class Draft1:
         self.tree.grid(row=0, column=0, sticky=tk.W)  # positions the scrollbar at the right (sticky = coordinates)
         self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
 
+        # runs the arduino function
         self.ard_data()
 
     def real_time(self):
@@ -128,10 +128,8 @@ class Draft1:
         self.tree.bind('<Button-1>', self.handle_click)
         # Inserts the number of data and current time to tree
         self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get() + " ft",
-                                                                   self.cda_D.get(),
-                                                                   self.water_D.get(),
-                                                                   self.shelter_D.get(),
-                                                                   self.weight_D.get()))
+                                                                      self.cda_D1.get(), self.water_D.get(),
+                                                                      self.shelter_D.get(), self.cda_D2.get()))
         self.real_time()
         self.tree.update()
 
@@ -148,17 +146,12 @@ class Draft1:
             self.arduinoData = self.arduinoData.split(",")
             self.dataNum.set(self.arduinoData[0])
             self.altP.set(self.arduinoData[1])
-            # print(self.arduinoData[2])
-            # print(self.arduinoData[3])
-            # print(self.arduinoData[4])
             if self.arduinoData[2] == str(0):
-                # print("ard[2] == 0")
-                self.cda_D.set(0)
+                self.cda_D1.set(0)
             else:
                 if self.cda_altitude == -1:
-                    # print("ard[2] != 0")
                     self.cda_altitude = self.altP.get()
-                    self.cda_D.set(self.cda_altitude)
+                    self.cda_D1.set(self.cda_altitude)
                 else:
                     pass
             if self.arduinoData[3] == str(0):
@@ -178,19 +171,18 @@ class Draft1:
                     self.shelter_D.set(self.shelter_altitude)
                 else:
                     pass
-            self.weight_D.set(self.arduinoData[5])
+            self.cda_D2.set(self.arduinoData[5])
             print(self.arduinoData)
             self.real_time()
             self.table()
             self.master.update()
 
-
-
     # Jorge
-    def handle_click(self, event):  # Function to prevent resize on the headings
+    # Function to prevent resize on the headings
+    def handle_click(self, event):
         if self.tree.identify_region(event.x, event.y) == "separator":
             return "break"
 
 
-root = Draft1(tk.Tk())
+root = Flight1(tk.Tk())
 tk.mainloop()
