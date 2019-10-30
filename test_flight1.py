@@ -5,6 +5,7 @@ import datetime as dt
 from serial import Serial
 
 serial = Serial("COM6", 9600)
+wait = serial.write(1)
 
 
 class Flight1:
@@ -34,10 +35,10 @@ class Flight1:
         self.tree.heading("#0", text="Data", anchor=tk.CENTER)
         self.tree.heading("one", text="Time", anchor=tk.CENTER)
         self.tree.heading("two", text="Altitude", anchor=tk.CENTER)
-        self.tree.heading("three", text="CDA", anchor=tk.CENTER)
-        self.tree.heading("four", text="Water", anchor=tk.CENTER)
-        self.tree.heading("five", text="Shelter", anchor=tk.CENTER)
-        self.tree.heading("six", text="Weight", anchor=tk.CENTER)
+        self.tree.heading("three", text="Water", anchor=tk.CENTER)
+        self.tree.heading("four", text="Shelter", anchor=tk.CENTER)
+        self.tree.heading("five", text="CDA 1", anchor=tk.CENTER)
+        self.tree.heading("six", text="CDA 2", anchor=tk.CENTER)
 
         # Carlos
         # Configuration of the GUI's appearance
@@ -64,6 +65,7 @@ class Flight1:
         self.start = "On"
         self.arduinoData = ""
         self.cda_altitude = -1
+        self.cda2_altitude = -1
         self.water_altitude = -1
         self.shelter_altitude = -1
 
@@ -162,7 +164,6 @@ class Flight1:
                     self.water_D.set(self.water_altitude)
                 else:
                     pass
-
             if self.arduinoData[4] == str(0):
                 self.shelter_D.set(0)
             else:
@@ -171,7 +172,14 @@ class Flight1:
                     self.shelter_D.set(self.shelter_altitude)
                 else:
                     pass
-            self.cda_D2.set(self.arduinoData[5])
+            if self.arduinoData[5] == str(0):
+                self.cda_D2.set(0)
+            else:
+                if self.cda2_altitude == -1:
+                    self.cda2_altitude = self.cda_D2.get()
+                    self.cda_D2.set(self.cda2_altitude)
+                else:
+                    pass
             print(self.arduinoData)
             self.real_time()
             self.table()
