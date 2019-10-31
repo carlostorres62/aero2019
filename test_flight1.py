@@ -4,8 +4,8 @@ import time
 import datetime as dt
 from serial import Serial
 
-serial = Serial("COM6", 9600)
-wait = serial.write(1)
+serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
+# wait = serial.write(1)
 
 
 class Flight1:
@@ -62,7 +62,6 @@ class Flight1:
         self.style.configure("R.TLabel", foreground="Red")
 
         # Arduino variables
-        self.start = "On"
         self.arduinoData = ""
         self.cda_altitude = -1
         self.cda2_altitude = -1
@@ -130,15 +129,15 @@ class Flight1:
         self.tree.bind('<Button-1>', self.handle_click)
         # Inserts the number of data and current time to tree
         self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get() + " ft",
-                                                                      self.cda_D1.get(), self.water_D.get(),
-                                                                      self.shelter_D.get(), self.cda_D2.get()))
+                                                                      self.water_D.get(), self.shelter_D.get(),
+                                                                      self.cda_D1.get(), self.cda_D2.get()))
         self.real_time()
         self.tree.update()
 
     # Function to receive data from Arduino and set variables
     def ard_data(self):
-        while self.start == "On":
-            while serial.inWaiting() == 0:
+        while True:
+            if serial.inWaiting() == 0:
                 print("Waiting")
                 time.sleep(1)
                 pass
@@ -148,42 +147,48 @@ class Flight1:
             self.arduinoData = self.arduinoData.split(",")
             self.dataNum.set(self.arduinoData[0])
             self.altP.set(self.arduinoData[1])
-            if self.arduinoData[2] == str(0):
-                self.cda_D1.set(0)
-            else:
-                if self.cda_altitude == -1:
-                    self.cda_altitude = self.altP.get()
-                    self.cda_D1.set(self.cda_altitude)
-                else:
-                    pass
-            if self.arduinoData[3] == str(0):
-                self.water_D.set(0)
-            else:
-                if self.water_altitude == -1:
-                    self.water_altitude = self.altP.get()
-                    self.water_D.set(self.water_altitude)
-                else:
-                    pass
-            if self.arduinoData[4] == str(0):
-                self.shelter_D.set(0)
-            else:
-                if self.shelter_altitude == -1:
-                    self.shelter_altitude = self.altP.get()
-                    self.shelter_D.set(self.shelter_altitude)
-                else:
-                    pass
-            if self.arduinoData[5] == str(0):
-                self.cda_D2.set(0)
-            else:
-                if self.cda2_altitude == -1:
-                    self.cda2_altitude = self.cda_D2.get()
-                    self.cda_D2.set(self.cda2_altitude)
-                else:
-                    pass
+            self.water_D.set(self.arduinoData[2])
+            self.shelter_D.set(self.arduinoData[3])
+            self.cda_D1.set(self.arduinoData[4])
+            self.cda_D2.set(self.arduinoData[5])
+
+            # if self.arduinoData[2] == str(0):
+            #     self.cda_D1.set(0)
+            # else:
+            #     if self.cda_altitude == -1:
+            #         self.cda_altitude = self.altP.get()
+            #         self.cda_D1.set(self.cda_altitude)
+            #     else:
+            #         pass
+            # if self.arduinoData[3] == str(0):
+            #     self.water_D.set(0)
+            # else:
+            #     if self.water_altitude == -1:
+            #         self.water_altitude = self.altP.get()
+            #         self.water_D.set(self.water_altitude)
+            #     else:
+            #         pass
+            # if self.arduinoData[4] == str(0):
+            #     self.shelter_D.set(0)
+            # else:
+            #     if self.shelter_altitude == -1:
+            #         self.shelter_altitude = self.altP.get()
+            #         self.shelter_D.set(self.shelter_altitude)
+            #     else:
+            #         pass
+            # if self.arduinoData[5] == str(0):
+            #     self.cda_D2.set(0)
+            # else:
+            #     if self.cda2_altitude == -1:
+            #         self.cda2_altitude = self.cda_D2.get()
+            #         self.cda_D2.set(self.cda2_altitude)
+            #     else:
+            #         pass
+
             print(self.arduinoData)
             self.real_time()
             self.table()
-            self.master.update()
+            # self.master.update()
 
     # Jorge
     # Function to prevent resize on the headings
