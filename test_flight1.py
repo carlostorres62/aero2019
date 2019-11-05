@@ -5,7 +5,7 @@ import datetime as dt
 from serial import Serial
 
 serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
-# wait = serial.write(1)
+wait = serial.write(1)
 
 
 class Flight1:
