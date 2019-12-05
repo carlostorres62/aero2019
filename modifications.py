@@ -24,7 +24,7 @@ class Draft1:
         self.style.configure("Treeview.Heading", font=(None, 15))  # Configures the style of the headings
         self.style.configure("Treeview", background="Dim Grey", fieldbackground="Dim Grey", foreground="Black")
 
-        self.style.configure("B.TLabel", foreground="Blue", background="Dim Grey", bordercolor="Black")
+        self.style.configure("B.TLabel", foreground="Blue", background="Dim Grey")
         self.style.configure("R.TLabel", foreground="Red", background="Dim Grey")
         self.style.configure("G.TLabel", foreground="Dark Green", background="Dim Grey")
         self.style.configure("Y.TLabel", foreground="Gold", background="Dim Grey")
@@ -33,7 +33,7 @@ class Draft1:
 
         # Scrollbar and table initialization
         self.scrollbar = ttk.Scrollbar(master, orient=tk.VERTICAL, style="Vertical.TScrollbar")
-        self.tree = ttk.Treeview(master, height=5, columns=5, yscrollcommand=self.scrollbar.set)
+        self.tree = ttk.Treeview(self.master, height=5, columns=5, yscrollcommand=self.scrollbar.set)
 
         # Jorge
         # Configuration of the tree's appeareance
@@ -55,35 +55,36 @@ class Draft1:
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
 
-        self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 90), style="G.TLabel")
-        self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 90), style="W.TLabel")
-        self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 90), style="G.TLabel")
-        self.altitudeVar = ttk.Label(master, textvariable=self.altP, font=("Helvetica", 90), style="W.TLabel")
+        # in Mac font must be +30
+        self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 50), style="G.TLabel")
+        self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="W.TLabel")
+        self.altitude = ttk.Label(master, text="Altitude:", font=("Helvetica", 50), style="G.TLabel")
+        self.altitudeVar = ttk.Label(master, textvariable=self.altP, font=("Helvetica", 50), style="W.TLabel")
 
-        self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 90), style="B.TLabel")
-        self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 90), style="W.TLabel")
-        self.timeLabelW = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 50), style="R.TLabel")
-        self.timeVarW = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="Y.TLabel")
+        self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 50), style="B.TLabel")
+        self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 50), style="W.TLabel")
+        self.timeLabelW = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 10), style="R.TLabel")
+        self.timeVarW = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 10), style="Y.TLabel")
 
-        self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 90), style="B.TLabel")
-        self.shelterDeployVar = ttk.Label(master, textvariable=self.shelter_D, font=("Helvetica", 90), style="W.TLabel")
-        self.timeLabelS = ttk.Label(master, text="- Deploy Time:", font=("Helvetica", 50), style="R.TLabel")
-        self.timeVarS = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="Y.TLabel")
+        self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 50), style="B.TLabel")
+        self.shelterDeployVar = ttk.Label(master, textvariable=self.shelter_D, font=("Helvetica", 50), style="W.TLabel")
+        self.timeLabelS = ttk.Label(master, text="- Deploy Time:", font=("Helvetica", 10), style="R.TLabel")
+        self.timeVarS = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 10), style="Y.TLabel")
         
-        self.cdaDeploy1 = ttk.Label(master, text="CDA 1:", font=("Helvetica", 90), style="B.TLabel")
-        self.cdaDeployVar1 = ttk.Label(master, textvariable=self.cda_D1, font=("Helvetica", 90), style="W.TLabel")
-        self.timeLabelC1 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 50), style="R.TLabel")
-        self.timeVarC1 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="Y.TLabel")
+        self.cdaDeploy1 = ttk.Label(master, text="CDA 1:", font=("Helvetica", 50), style="B.TLabel")
+        self.cdaDeployVar1 = ttk.Label(master, textvariable=self.cda_D1, font=("Helvetica", 50), style="W.TLabel")
+        self.timeLabelC1 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 10), style="R.TLabel")
+        self.timeVarC1 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 10), style="Y.TLabel")
         
-        self.cdaDeploy2 = ttk.Label(master, text="CDA 2:", font=("Helvetica", 90), style="B.TLabel")
-        self.cdaDeployVar2 = ttk.Label(master, textvariable=self.cda_D2, font=("Helvetica", 90), style="W.TLabel")
-        self.timeLabelC2 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 50), style="R.TLabel")
-        self.timeVarC2 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="Y.TLabel")
+        self.cdaDeploy2 = ttk.Label(master, text="CDA 2:", font=("Helvetica", 50), style="B.TLabel")
+        self.cdaDeployVar2 = ttk.Label(master, textvariable=self.cda_D2, font=("Helvetica", 50), style="W.TLabel")
+        self.timeLabelC2 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 10), style="R.TLabel")
+        self.timeVarC2 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 10), style="Y.TLabel")
         
-        self.cdaDeploy3 = ttk.Label(master, text="CDA 3:", font=("Helvetica", 90), style="B.TLabel")
-        self.cdaDeployVar3 = ttk.Label(master, textvariable=self.cda_D3, font=("Helvetica", 90), style="W.TLabel")
-        self.timeLabelC3 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 50), style="R.TLabel")
-        self.timeVarC3 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 50), style="Y.TLabel")
+        self.cdaDeploy3 = ttk.Label(master, text="CDA 3:", font=("Helvetica", 50), style="B.TLabel")
+        self.cdaDeployVar3 = ttk.Label(master, textvariable=self.cda_D3, font=("Helvetica", 50), style="W.TLabel")
+        self.timeLabelC3 = ttk.Label(master, text="Deploy Time:", font=("Helvetica", 10), style="R.TLabel")
+        self.timeVarC3 = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 10), style="Y.TLabel")
 
         # Arduino variables
         self.arduinoData = ""
