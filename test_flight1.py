@@ -21,8 +21,11 @@ class Flight1:
         self.master.resizable(False, False)
 
         # Scrollbar and table initialization
-        self.scrollbar = ttk.Scrollbar(master, orient=tk.VERTICAL)
-        self.tree = ttk.Treeview(master, height=5, columns=5, yscrollcommand=self.scrollbar.set)
+        self.y_scrollbar = ttk.Scrollbar(master, orient=tk.VERTICAL)
+        self.tree = ttk.Treeview(master, height=5, columns=5, yscrollcommand=self.y_scrollbar.set)
+
+        # self.x_scrollbar = ttk.Scrollbar(master, orient=tk.HORIZONTAL)
+        # self.tree = ttk.Treeview(master, height=5, columns=5, yscrollcommand=self.x_scrollbar.set)
 
         self.style = ttk.Style()
         self.style.configure("Treeview.Heading", font=(None, 15))  # Configures the size of the headings
@@ -51,8 +54,12 @@ class Flight1:
         self.altitudeVar = ttk.Label(master, textvariable=self.altP, font=("Helvetica", 60))
         self.timeLabel = ttk.Label(master, text="Time:", font=("Helvetica", 60), style="B.TLabel")
         self.timeVar = ttk.Label(master, textvariable=self.tP, font=("Helvetica", 60))
-        self.cdaDeploy = ttk.Label(master, text="CDA:", font=("Helvetica", 60), style="B.TLabel")
+        self.cdaDeploy = ttk.Label(master, text="CDA1:", font=("Helvetica", 60), style="B.TLabel")
         self.cdaDeployVar = ttk.Label(master, textvariable=self.cda_D1, font=("Helvetica", 60))
+        self.cda2Deploy = ttk.Label(master, text="CDA2:", font=("Helvetica", 60), style="B.TLabel")
+        self.cda2DeployVar = ttk.Label(master, textvariable=self.cda_D2, font=("Helvetica", 60))
+        self.cda3Deploy = ttk.Label(master, text="CDA:", font=("Helvetica", 60), style="B.TLabel")
+        self.cda3DeployVar = ttk.Label(master, textvariable=self.cda_D3, font=("Helvetica", 60))
         self.waterDeploy = ttk.Label(master, text="Water:", font=("Helvetica", 60), style="B.TLabel")
         self.waterDeployVar = ttk.Label(master, textvariable=self.water_D, font=("Helvetica", 60))
         self.shelterDeploy = ttk.Label(master, text="Shelter:", font=("Helvetica", 60), style="B.TLabel")
@@ -97,10 +104,12 @@ class Flight1:
         for col in self.tree["columns"]:
             self.tree.column(col, anchor=tk.CENTER, width=col_width)
 
-        self.scrollbar.config(command=self.tree.yview)
+        self.y_scrollbar.config(command=self.tree.yview)
+        #self.x_scrollbar.config(command=self.tree.xview)
 
         self.tree.grid(row=0, column=0, sticky=tk.W)  # positions the scrollbar at the right (sticky = coordinates)
-        self.scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
+        self.y_scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
+        #self.x_scrollbar.grid(row=0, column=1, sticky=tk.W + tk.E)
 
         # runs the arduino function
         self.ard_data()
@@ -130,7 +139,7 @@ class Flight1:
         # Inserts the number of data and current time to tree
         self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get() + " ft",
                                                                       self.water_D.get(), self.shelter_D.get(),
-                                                                      self.cda_D1.get(), self.cda_D2.get()))
+                                                                      self.cda_D1.get(), self.cda_D2.get(), self.cda_D3.get()))
         self.real_time()
         self.tree.update()
 
@@ -151,6 +160,7 @@ class Flight1:
             self.shelter_D.set(self.arduinoData[3])
             self.cda_D1.set(self.arduinoData[4])
             self.cda_D2.set(self.arduinoData[5])
+            #self.cda_D3.set(self.arduinoData[6])
 
             # if self.arduinoData[2] == str(0):
             #     self.cda_D1.set(0)

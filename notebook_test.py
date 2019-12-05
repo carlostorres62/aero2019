@@ -17,8 +17,10 @@ class Draft1:
         self.style.theme_use("classic")
 
         # font sizes (in Mac font must be +20)
-        self.fsize = 65
-        self.fsize2 = 30
+        variant = 20
+        self.fsize = 65 + variant
+        self.fsize2 = 30 + variant
+
 
         # Configures the style of the tree headings
         self.style.configure("Treeview.Heading", font=(None, 25))
@@ -27,6 +29,7 @@ class Draft1:
         # Configures the style of the tabs
         self.style.configure("TNotebook.Tab", font=("Helvetica", 20))
         self.style.configure("TNotebook", background="Dim Grey")
+
 
         # Configures the background and font colors
         self.style.configure("DG.TLabel", background="Dim Grey")
@@ -70,7 +73,8 @@ class Draft1:
 
         print(int(self.master.winfo_screenwidth()))
         self.labelWidth = round(self.master.winfo_screenwidth()/192)
-        self.labelWidth2 = round(self.master.winfo_screenwidth()/88)
+        self.labelWidth2 = int(self.master.winfo_screenwidth()/110) # + 22 in Mac
+
 
         self.timeLabel = ttk.Label(self.tab1, text="Time:", font=("Helvetica", self.fsize), style="G.TLabel",
                                    width=self.labelWidth, anchor=tk.E)
