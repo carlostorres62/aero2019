@@ -76,58 +76,47 @@ class Draft1:
         self.labelWidth2 = int(self.master.winfo_screenwidth()/110) # + 22 in Mac
 
 
-        self.timeLabel = ttk.Label(self.tab1, text="Time:", font=("Helvetica", self.fsize), style="G.TLabel",
-                                   width=self.labelWidth, anchor=tk.E)
+        self.timeLabel = ttk.Label(self.tab1, text="Time:", font=("Helvetica", self.fsize), style="G.TLabel", justify = tk.LEFT)
         self.timeVar = ttk.Label(self.tab1, textvariable=self.tP, font=("Helvetica", self.fsize), style="W.TLabel",
                                  width=self.labelWidth, anchor=tk.W)
 
-        self.cdaDeploy1 = ttk.Label(self.tab1, text="CDA 1:", font=("Helvetica", self.fsize), style="B.TLabel",
-                                    width=self.labelWidth, anchor=tk.E)
+        self.cdaDeploy1 = ttk.Label(self.tab1, text="CDA 1:", font=("Helvetica", self.fsize), style="B.TLabel", justify = tk.LEFT)
         self.cdaDeployVar1 = ttk.Label(self.tab1, textvariable=self.cda_D1, font=("Helvetica", self.fsize),
                                        style="W.TLabel", width=self.labelWidth, anchor=tk.W)
-        self.timeLabelC1 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",
-                                     width=self.labelWidth2, anchor=tk.E)
+        self.timeLabelC1 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel", justify = tk.LEFT)
         self.timeVarC1 = ttk.Label(self.tab1, textvariable=self.tP2, font=("Helvetica", self.fsize2), style="Y.TLabel",
                                    width=self.labelWidth2, anchor=tk.W)
 
-        self.cdaDeploy2 = ttk.Label(self.tab1, text="CDA 2:", font=("Helvetica", self.fsize), style="B.TLabel",
-                                    width=self.labelWidth, anchor=tk.E)
+        self.cdaDeploy2 = ttk.Label(self.tab1, text="CDA 2:", font=("Helvetica", self.fsize), style="B.TLabel",justify = tk.LEFT)
         self.cdaDeployVar2 = ttk.Label(self.tab1, textvariable=self.cda_D2, font=("Helvetica", self.fsize),
                                        style="W.TLabel", width=self.labelWidth, anchor=tk.W)
-        self.timeLabelC2 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",
-                                     width=self.labelWidth2, anchor=tk.E)
+        self.timeLabelC2 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",justify = tk.LEFT)
         self.timeVarC2 = ttk.Label(self.tab1, textvariable=self.tP2, font=("Helvetica", self.fsize2), style="Y.TLabel",
                                    width=self.labelWidth2, anchor=tk.W)
 
         self.cdaDeploy3 = ttk.Label(self.tab1, text="CDA 3:", font=("Helvetica", self.fsize), style="B.TLabel",
                                     width=self.labelWidth, anchor=tk.E)
         self.cdaDeployVar3 = ttk.Label(self.tab1, textvariable=self.cda_D3, font=("Helvetica", self.fsize),
-                                       style="W.TLabel", width=self.labelWidth, anchor=tk.W)
-        self.timeLabelC3 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",
-                                     width=self.labelWidth2, anchor=tk.E)
+                                       style="W.TLabel",justify = tk.LEFT)
+        self.timeLabelC3 = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",justify = tk.LEFT)
         self.timeVarC3 = ttk.Label(self.tab1, textvariable=self.tP2, font=("Helvetica", self.fsize2), style="Y.TLabel",
                                    width=self.labelWidth2, anchor=tk.W)
 
-        self.altitude = ttk.Label(self.tab1, text="Altitude:", font=("Helvetica", self.fsize), style="G.TLabel",
-                                  width=self.labelWidth, anchor=tk.E)
+        self.altitude = ttk.Label(self.tab1, text="Altitude:", font=("Helvetica", self.fsize), style="G.TLabel",justify = tk.RIGHT)
         self.altitudeVar = ttk.Label(self.tab1, textvariable=self.altP, font=("Helvetica", self.fsize),
                                      style="W.TLabel", width=self.labelWidth-2, anchor=tk.W)
 
-        self.waterDeploy = ttk.Label(self.tab1, text="Water:", font=("Helvetica", self.fsize), style="B.TLabel",
-                                     width=self.labelWidth, anchor=tk.E)
+        self.waterDeploy = ttk.Label(self.tab1, text="Water:", font=("Helvetica", self.fsize), style="B.TLabel",justify = tk.RIGHT)
         self.waterDeployVar = ttk.Label(self.tab1, textvariable=self.water_D, font=("Helvetica", self.fsize),
                                         style="W.TLabel", width=self.labelWidth-2, anchor=tk.W)
-        self.timeLabelW = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",
-                                    width=self.labelWidth2, anchor=tk.E)
+        self.timeLabelW = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",justify = tk.RIGHT)
         self.timeVarW = ttk.Label(self.tab1, textvariable=self.tP2, font=("Helvetica", self.fsize2), style="Y.TLabel",
                                   width=self.labelWidth2-5, anchor=tk.W)
 
-        self.shelterDeploy = ttk.Label(self.tab1, text="Habitat:", font=("Helvetica", self.fsize), style="B.TLabel",
-                                       width=self.labelWidth, anchor=tk.E)
+        self.shelterDeploy = ttk.Label(self.tab1, text="Habitat:", font=("Helvetica", self.fsize), style="B.TLabel",justify = tk.RIGHT)
         self.shelterDeployVar = ttk.Label(self.tab1, textvariable=self.shelter_D, font=("Helvetica", self.fsize),
                                           style="W.TLabel", width=self.labelWidth-2, anchor=tk.W)
-        self.timeLabelS = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",
-                                    width=self.labelWidth2, anchor=tk.E)
+        self.timeLabelS = ttk.Label(self.tab1, text="Deploy Time:", font=("Helvetica", self.fsize2), style="R.TLabel",justify = tk.RIGHT)
         self.timeVarS = ttk.Label(self.tab1, textvariable=self.tP2, font=("Helvetica", self.fsize2), style="Y.TLabel",
                                   width=self.labelWidth2-5, anchor=tk.W)
 
