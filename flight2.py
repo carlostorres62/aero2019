@@ -1,11 +1,15 @@
 import tkinter as tk
 import datetime as dt
-from random import randint
 from tkinter import ttk
 from tkinter import font
+from serial import Serial
+import time
+
+serial = Serial("COM6", 9600)
+wait = serial.write(1)
 
 
-class Draft1:
+class Flight2:
     def __init__(self, master):
 
         # Standard configuration
@@ -128,6 +132,13 @@ class Draft1:
                                     anchor=tk.E)
         self.timeVarS = ttk.Label(self.rightData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
 
+        # Arduino variables
+        self.arduinoData = ""
+        self.cda_altitude = -1
+        self.cda2_altitude = -1
+        self.water_altitude = -1
+        self.shelter_altitude = -1
+
         # Time variables
         self.hour = 0
         self.minute = 0
@@ -191,8 +202,8 @@ class Draft1:
         self.scrollbar.pack(fill=tk.Y, side=tk.RIGHT)
         # positions the scrollbar at the right (sticky = coordinates)
 
-        self.table()
-        self.master.mainloop()
+        # runs the arduino function
+        self.ard_data()
 
     def real_time(self):
         # Jorge
@@ -215,29 +226,38 @@ class Draft1:
         self.tP.set(self.strTime)
         self.tP2.set(self.strTime2)
 
-    def refresh(self):
-        # Carlos
-        self.dataNum.set(randint(0, 100))
-        self.altP.set(randint(10000, 20000))
-        self.water_D.set(randint(10000, 20000))
-        self.shelter_D.set(randint(10000, 20000))
-        self.cda_D1.set(randint(10000, 20000))
-        self.cda_D2.set(randint(10000, 20000))
-        self.cda_D3.set(randint(10000, 20000))
-        self.tP.set(self.strTime)
-        # self.master.after(1000, self.refresh)
-
     # Jorge
     def table(self):
         self.tree.bind('<Button-1>', self.handle_click)
-        self.real_time()
-        self.refresh()
         # Inserts the number of data and current time to tree
         self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get(),
                                                                       self.water_D.get(), self.shelter_D.get(),
                                                                       self.cda_D1.get(), self.cda_D2.get(),
                                                                       self.cda_D3.get()))
-        self.master.after(1000, self.table)
+        self.real_time()
+        self.tree.update()
+
+    # Function to receive data from Arduino and set variables
+    def ard_data(self):
+        while True:
+            if serial.inWaiting() == 0:
+                print("Waiting")
+                time.sleep(1)
+                pass
+            self.arduinoData = serial.readline()
+            self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
+            self.arduinoData = str(self.arduinoData)
+            self.arduinoData = self.arduinoData.split(",")
+            self.dataNum.set(self.arduinoData[0])
+            self.altP.set(self.arduinoData[1])
+            self.water_D.set(self.arduinoData[3])
+            self.shelter_D.set(self.arduinoData[3])
+            self.cda_D1.set(self.arduinoData[4])
+            self.cda_D2.set(self.arduinoData[5])
+
+            print(self.arduinoData)
+            self.real_time()
+            self.table()
 
     # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
@@ -245,4 +265,4 @@ class Draft1:
             return "break"
 
 
-root = Draft1(tk.Tk())
+root = Flight2(tk.Tk())

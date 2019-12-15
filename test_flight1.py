@@ -4,7 +4,7 @@ import time
 import datetime as dt
 from serial import Serial
 
-serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
+serial = Serial("COM6", 9600)
 wait = serial.write(1)
 
 
@@ -105,11 +105,9 @@ class Flight1:
             self.tree.column(col, anchor=tk.CENTER, width=col_width)
 
         self.y_scrollbar.config(command=self.tree.yview)
-        #self.x_scrollbar.config(command=self.tree.xview)
 
         self.tree.grid(row=0, column=0, sticky=tk.W)  # positions the scrollbar at the right (sticky = coordinates)
         self.y_scrollbar.grid(row=0, column=1, sticky=tk.N + tk.S)
-        #self.x_scrollbar.grid(row=0, column=1, sticky=tk.W + tk.E)
 
         # runs the arduino function
         self.ard_data()
@@ -156,11 +154,11 @@ class Flight1:
             self.arduinoData = self.arduinoData.split(",")
             self.dataNum.set(self.arduinoData[0])
             self.altP.set(self.arduinoData[1])
-            self.water_D.set(self.arduinoData[2])
+            self.water_D.set(self.arduinoData[3])
             self.shelter_D.set(self.arduinoData[3])
             self.cda_D1.set(self.arduinoData[4])
             self.cda_D2.set(self.arduinoData[5])
-            #self.cda_D3.set(self.arduinoData[6])
+            # self.cda_D3.set(self.arduinoData[6])
 
             # if self.arduinoData[2] == str(0):
             #     self.cda_D1.set(0)
