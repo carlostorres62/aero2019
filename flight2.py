@@ -3,14 +3,17 @@ import datetime as dt
 from tkinter import ttk
 from tkinter import font
 from serial import Serial
+from xbee import XBee
 import time
-
-serial = Serial("COM6", 9600)
-wait = serial.write(1)
 
 
 class Flight2:
     def __init__(self, master):
+
+        # Arduino configuration
+        self.serial = ""
+        self.wait = 0
+        self.xbee = 0
 
         # Standard configuration
         self.master = master
@@ -89,9 +92,6 @@ class Flight2:
         self.dataNum, self.altP, self.tP, self.tP2 = tk.StringVar(), tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
-
-        print(self.screenHeight, self.screenWidth)
-        print(self.master.winfo_screenmmheight(), self.master.winfo_screenmmwidth())
 
         self.timeLabel = ttk.Label(self.leftData, text="Time:", font=self.labelFont, style="G.TLabel", anchor=tk.CENTER)
         self.timeVar = ttk.Label(self.leftData, textvariable=self.tP, font=self.labelFont, style="W.TLabel")
@@ -203,7 +203,7 @@ class Flight2:
         # positions the scrollbar at the right (sticky = coordinates)
 
         # runs the arduino function
-        self.ard_data()
+        # self.ard_data()
 
     def real_time(self):
         # Jorge
@@ -239,21 +239,25 @@ class Flight2:
 
     # Function to receive data from Arduino and set variables
     def ard_data(self):
+
+        self.serial = Serial("COM6", 9600)
+        # self.wait = self.serial.write(1)
+
         while True:
-            if serial.inWaiting() == 0:
+            if self.serial.inWaiting() == 0:
                 print("Waiting")
                 time.sleep(1)
                 pass
-            self.arduinoData = serial.readline()
+            self.arduinoData = self.serial.readline()
             self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
             self.arduinoData = str(self.arduinoData)
             self.arduinoData = self.arduinoData.split(",")
-            self.dataNum.set(self.arduinoData[0])
-            self.altP.set(self.arduinoData[1])
-            self.water_D.set(self.arduinoData[3])
-            self.shelter_D.set(self.arduinoData[3])
-            self.cda_D1.set(self.arduinoData[4])
-            self.cda_D2.set(self.arduinoData[5])
+           # self.dataNum.set(self.arduinoData[0])
+            self.altP.set(self.arduinoData[0])
+            self.water_D.set(self.arduinoData[1])
+            self.shelter_D.set(self.arduinoData[2])
+            #self.cda_D1.set(self.arduinoData[4])
+            #self.cda_D2.set(self.arduinoData[5])
 
             print(self.arduinoData)
             self.real_time()
@@ -266,3 +270,10 @@ class Flight2:
 
 
 root = Flight2(tk.Tk())
+
+try:
+    root.ard_data()
+except:
+    print("Disconnected")
+
+tk.mainloop()

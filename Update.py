@@ -138,7 +138,7 @@ class Flight1:
             if message == 0:
                 print("Waiting")
                 time.sleep(1)
-                pass
+                break
             else:
                 self.arduinoData = self.serial.readline()
                 self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'

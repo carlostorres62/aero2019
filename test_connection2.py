@@ -242,7 +242,6 @@ class Flight2:
 
         self.serial = Serial("COM6", 9600)
         # self.wait = self.serial.write(1)
-        self.xbee = XBee(self.serial)
 
         while True:
             if self.serial.inWaiting() == 0:
