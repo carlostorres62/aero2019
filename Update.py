@@ -4,14 +4,12 @@ import time
 import datetime as dt
 from serial import Serial
 
-Signal = True
-
 
 class Flight1:
     def __init__(self, master):
 
-        self.serial = ""
         self.wait = 0
+        self.serial = Serial("COM6", 9600)
 
         self.master = master
         self.master.title("Aero Design")
@@ -129,17 +127,18 @@ class Flight1:
         print("table")
 
     def ard_data(self):
-        try:
-            self.serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
-            Signal = True
-            # self.wait = self.serial.write(1)
-        except:
-            Signal = False
-            print("Serial port error")
 
-        if Signal:
-            if self.serial.inWaiting() == 0:
-                print("No signal")
+        # self.wait = self.serial.write(1)
+        while True:
+            try:
+                message = self.serial.inWaiting()
+            except:
+                self.master.after(100, self.ard_data)
+
+            if message == 0:
+                print("Waiting")
+                time.sleep(1)
+                pass
             else:
                 self.arduinoData = self.serial.readline()
                 self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
@@ -156,6 +155,8 @@ class Flight1:
                 self.real_time()
                 self.table()
 
+                print("ard data")
+        self.master.after(100, self.ard_data)
 
     def handle_click(self, event):
         if self.tree.identify_region(event.x, event.y) == "separator":
@@ -164,20 +165,6 @@ class Flight1:
 
 
 root = Flight1(tk.Tk())
-# print("before try")
-#
-#
-# def refresh():
-#
-#     try:
-#         root.ard_data()
-#         print("in try")
-#     except:
-#         print("Disconnected")
-#         tk.mainloop()
-#
-#
-# root.master.after(1000, refresh)
-# root.master.update()
-tk.mainloop()
+root.master.after(1000, root.ard_data)
+root.master.mainloop()
 

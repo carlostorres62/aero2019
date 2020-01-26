@@ -3,6 +3,7 @@ import datetime as dt
 from tkinter import ttk
 from tkinter import font
 from serial import Serial
+from xbee import XBee
 import time
 
 
@@ -12,6 +13,7 @@ class Flight2:
         # Arduino configuration
         self.serial = ""
         self.wait = 0
+        self.xbee = 0
 
         # Standard configuration
         self.master = master
@@ -238,8 +240,9 @@ class Flight2:
     # Function to receive data from Arduino and set variables
     def ard_data(self):
 
-        self.serial = Serial("COM10", 9600)
+        self.serial = Serial("COM6", 9600)
         # self.wait = self.serial.write(1)
+        self.xbee = XBee(self.serial)
 
         while True:
             if self.serial.inWaiting() == 0:
