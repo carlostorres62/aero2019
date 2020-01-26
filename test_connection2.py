@@ -255,7 +255,7 @@ class Flight2:
             self.water_D.set(self.arduinoData[1])
             self.shelter_D.set(self.arduinoData[2])
             #self.cda_D1.set(self.arduinoData[4])
-            #self.cda_D2.set(self.arduinoData[5])
+            #self.cda_D2.set(self.arduinoDatsa[5])
 
             print(self.arduinoData)
             self.real_time()
