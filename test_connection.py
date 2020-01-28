@@ -171,7 +171,6 @@ def refresh():
         print("in try")
     except:
         print("Disconnected")
-        tk.mainloop()
 
 
 root.master.after(1000, refresh)

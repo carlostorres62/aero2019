@@ -3,7 +3,6 @@ import datetime as dt
 from tkinter import ttk
 from tkinter import font
 from serial import Serial
-from xbee import XBee
 import time
 
 
@@ -11,9 +10,7 @@ class Flight2:
     def __init__(self, master):
 
         # Arduino configuration
-        self.serial = ""
-        self.wait = 0
-        self.xbee = 0
+        self.serial = Serial("COM6", 9600)
 
         # Standard configuration
         self.master = master
@@ -239,30 +236,34 @@ class Flight2:
 
     # Function to receive data from Arduino and set variables
     def ard_data(self):
-
-        self.serial = Serial("COM6", 9600)
-        # self.wait = self.serial.write(1)
-        self.xbee = XBee(self.serial)
-
         while True:
-            if self.serial.inWaiting() == 0:
+            try:
+                message = self.serial.inWaiting()
+            except:
+                self.master.after(100, self.ard_data)
+
+            if message == 0:
                 print("Waiting")
                 time.sleep(1)
-                pass
-            self.arduinoData = self.serial.readline()
-            self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
-            self.arduinoData = str(self.arduinoData)
-            self.arduinoData = self.arduinoData.split(",")
-           # self.dataNum.set(self.arduinoData[0])
-            self.altP.set(self.arduinoData[0])
-            self.water_D.set(self.arduinoData[1])
-            self.shelter_D.set(self.arduinoData[2])
-            #self.cda_D1.set(self.arduinoData[4])
-            #self.cda_D2.set(self.arduinoDatsa[5])
+                break
+            else:
+                self.arduinoData = self.serial.readline()
+                self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
+                self.arduinoData = str(self.arduinoData)
+                self.arduinoData = self.arduinoData.split(",")
+                #self.dataNum.set(self.arduinoData[0])
+                self.altP.set(self.arduinoData[0])
+                self.water_D.set(self.arduinoData[1])
+                self.shelter_D.set(self.arduinoData[2])
+                #self.cda_D1.set(self.arduinoData[4])
+                #self.cda_D2.set(self.arduinoData[5])
 
-            print(self.arduinoData)
-            self.real_time()
-            self.table()
+                print(self.arduinoData)
+                self.real_time()
+                self.table()
+
+                print("ard data")
+        self.master.after(100, self.ard_data)
 
     # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
@@ -271,10 +272,5 @@ class Flight2:
 
 
 root = Flight2(tk.Tk())
-
-try:
-    root.ard_data()
-except:
-    print("Disconnected")
-
-tk.mainloop()
+root.master.after(1000, root.ard_data)
+root.master.mainloop()
