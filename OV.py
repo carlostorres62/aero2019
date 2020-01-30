@@ -23,7 +23,6 @@ class Flight2:
 
         self.master.call("tk", "scaling", 1)    # Scales the pixels so sizes do not vary on different computers
 
-
         self.style = ttk.Style()
         self.style.theme_use("classic")
 
@@ -91,8 +90,7 @@ class Flight2:
 
         # Carlos
         self.dataNum = 0
-        self.altP, self.tP, self.tP2 = tk.StringVar(), tk.StringVar(), tk.StringVar()
-        self.tP3, self.tP4, self.tP5 = tk.StringVar(), tk.StringVar(), tk.StringVar()
+        self.altP, self.tP, self.tP2, self.tP3 = tk.StringVar(), tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
 
@@ -110,13 +108,13 @@ class Flight2:
         self.cdaDeployVar2 = ttk.Label(self.leftData, textvariable=self.cda_D2, font=self.labelFont, style="W.TLabel")
         self.timeLabelC2 = ttk.Label(self.leftData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                      anchor=tk.E)
-        self.timeVarC2 = ttk.Label(self.leftData, textvariable=self.tP4, font=self.labelFont2, style="Y.TLabel")
+        self.timeVarC2 = ttk.Label(self.leftData, textvariable=self.tP3, font=self.labelFont2, style="Y.TLabel")
 
         self.cdaDeploy3 = ttk.Label(self.leftData, text="CDA 3:", font=self.labelFont, style="B.TLabel")
         self.cdaDeployVar3 = ttk.Label(self.leftData, textvariable=self.cda_D3, font=self.labelFont, style="W.TLabel")
         self.timeLabelC3 = ttk.Label(self.leftData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                      anchor=tk.E)
-        self.timeVarC3 = ttk.Label(self.leftData, textvariable=self.tP5, font=self.labelFont2, style="Y.TLabel")
+        self.timeVarC3 = ttk.Label(self.leftData, textvariable=self.tP3, font=self.labelFont2, style="Y.TLabel")
 
         self.altitude = ttk.Label(self.rightData, text="Altitude:", font=self.labelFont, style="G.TLabel")
         self.altitudeVar = ttk.Label(self.rightData, textvariable=self.altP, font=self.labelFont, style="W.TLabel")
@@ -138,7 +136,6 @@ class Flight2:
 
         # Arduino variables
         self.arduinoData = ""
-
 
         # Time variables
         self.hour = 0
@@ -207,7 +204,6 @@ class Flight2:
         self.scrollbar.pack(fill=tk.Y, side=tk.RIGHT)
         # positions the scrollbar at the right (sticky = coordinates)
 
-
     def real_time(self):
         # Jorge
         self.hour = dt.datetime.now().hour  # Obtains the current hour
@@ -226,9 +222,10 @@ class Flight2:
 
         self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
         self.strTime2 = "  " + self.hTime + ":" + self.mTime + ":" + self.second  # for the position of smaller times
-        if self.arduinoData[1] == " 0":
+        self.tP.set(self.strTime)
+        if self.arduinoData[1] == "0":
             self.tP2.set(self.strTime2)
-        if self.arduinoData[2] == " 0":
+        if self.arduinoData[2] == "0":
             self.tP3.set(self.strTime2)
 
     # Jorge
@@ -236,17 +233,16 @@ class Flight2:
         # Call of handle_click function when left click is pressed
         self.tree.bind('<Button-1>', self.handle_click)
         # Inserts the number of data and current time to tree with StringVar variables previously initialized
-        self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get(),
-                                                                      self.water_D.get(), self.shelter_D.get(),
-                                                                      self.cda_D1.get(), self.cda_D2.get(),
-                                                                      self.cda_D3.get()))
+        self.tree.insert("", tk.END, text=self.dataNum, values=(self.strTime, self.altP.get(), self.water_D.get(),
+                                                                self.shelter_D.get(), self.cda_D1.get(),
+                                                                self.cda_D2.get(), self.cda_D3.get()))
         self.real_time()
         self.tree.update()
 
     # Function to receive data from Arduino and set variables
     def ard_data(self):
         # Connects to port where antenna is currently connected
-        #self.serial = Serial("dev/cu.usbserial-DN05KFL5", 9600)
+        # self.serial = Serial("dev/cu.usbserial-DN05KFL5", 9600)
         """ While loop is used to iterate infinitely to keep receiving data from arduino.
         Try is used to WAIT until signal from arduino is received. If no signal is received the if condition is met. 
         If the 'message' varible is 0, then it breaks out of the loop and the function is called again
@@ -268,14 +264,14 @@ class Flight2:
                 self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
                 self.arduinoData = str(self.arduinoData) # Converts the data from arduino to string
                 self.arduinoData = self.arduinoData.split(",")
-                #self.dataNum.set(self.arduinoData[0])
                 # Set the value to the variables that will be displayed on the GUI with the data from arduino
                 self.dataNum += 1
                 self.altP.set(self.arduinoData[0])
                 self.water_D.set(self.arduinoData[1])
                 self.shelter_D.set(self.arduinoData[1])
-                #self.cda_D1.set(self.arduinoData[4])
-                #self.cda_D2.set(self.arduinoData[5])
+                self.cda_D1.set(self.arduinoData[2])
+                self.cda_D2.set(self.arduinoData[2])
+                self.cda_D3.set(self.arduinoData[2])
 
                 print(self.arduinoData)
                 self.real_time()
