@@ -11,7 +11,7 @@ class Flight2:
     def __init__(self, master):
 
         # Arduino configuration
-        self.port = "/dev/cu.usbmodem143201"
+        self.port = "/dev/cu.usbmodem14201"
         self.serial = Serial(self.port, 9600)
 
         # Standard configuration
@@ -30,6 +30,7 @@ class Flight2:
 
         self.labelFont = font.Font(size=85)  # Sets font size, rules of the competition state that the font size
         self.labelFont2 = font.Font(size=40)  # of the display must be at least 0.5 inch in size.
+        self.labelFont3 = font.Font(size=55)
 
         self.height = int((self.screenHeight / 20))  # Sets height size for the table
         col_width = int(self.screenWidth / 8)   # Sets width of columns for the table
@@ -137,8 +138,8 @@ class Flight2:
                                     anchor=tk.E)
         self.timeVarS = ttk.Label(self.rightData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
 
-        self.gateVar = ttk.Label(self.rightData, textvariable=self.gate, font=self.labelFont, style="Y.TLabel")
-        self.closeVar = ttk.Label(self.rightData, textvariable=self.close, font=self.labelFont, style="Y.TLabel")
+        self.gateVar = ttk.Label(self.rightData, textvariable=self.gate, font=self.labelFont3, style="Y.TLabel")
+        self.closeVar = ttk.Label(self.rightData, textvariable=self.close, font=self.labelFont3, style="Y.TLabel")
 
         # Arduino variables
         self.arduinoData = ""
@@ -238,7 +239,7 @@ class Flight2:
         if self.arduinoData[1] == "0":
             self.tP2.set(self.strTime2)
         else:
-            self.gate.set("Gate")
+            self.gate.set("Gate ")
             self.close.set("Closed")
         if self.arduinoData[2] == "0":
             self.tP3.set(self.strTime2)
