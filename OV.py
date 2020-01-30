@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import font
 from serial import Serial
 import time
+import csv
 
 
 class Flight2:
@@ -147,6 +148,9 @@ class Flight2:
         self.strTime = ""
         self.strTime2 = ""
 
+        #Variable to store backup csv array
+        self.csv_data = []
+
         # Function to display tabs
         self.notebook.pack()
 
@@ -280,7 +284,13 @@ class Flight2:
                 print("ard data")
         self.master.after(100, self.ard_data)
 
-    # Jorge
+        self.csv_data = [self.arduinoData[0], self.arduinoData[1], self.arduinoData[2]]
+        with open('backup.csv', 'a', newline="") as csvFile:  #
+            writer = csv.writer(csvFile)  # Creates csv file.
+            writer.writerow(self.csv_data)  
+        csvFile.close()
+
+        # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
         if self.tree.identify_region(event.x, event.y) == "separator":
             return "break"
