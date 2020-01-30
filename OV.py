@@ -10,27 +10,28 @@ class Flight2:
     def __init__(self, master):
 
         # Arduino configuration
-        self.serial = Serial("COM6", 9600)
+        self.serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
 
         # Standard configuration
         self.master = master
         self.master.title("Aero Design")
-        self.master.state('zoomed')
+        self.master.state('zoomed')   # Sets the GUI to be full screen
         self.master.configure(background="Dim Grey")
 
-        self.screenHeight = self.master.winfo_screenheight()
-        self.screenWidth = self.master.winfo_screenwidth()
+        self.screenHeight = self.master.winfo_screenheight()  # Sets the height and width of the GUI to the
+        self.screenWidth = self.master.winfo_screenwidth()    # height and width of corresponding computer screen
 
-        self.master.call("tk", "scaling", 1)
+        self.master.call("tk", "scaling", 1)    # Scales the pixels so sizes do not vary on different computers
+
 
         self.style = ttk.Style()
         self.style.theme_use("classic")
 
-        self.labelFont = font.Font(size=85)
-        self.labelFont2 = font.Font(size=40)
+        self.labelFont = font.Font(size=85)  # Sets font size, rules of the competition state that the font size
+        self.labelFont2 = font.Font(size=40)  # of the display must be at least 0.5 inch in size.
 
-        self.height = int((self.screenHeight / 20))  # Sets height size for tree
-        col_width = int(self.screenWidth / 8)
+        self.height = int((self.screenHeight / 20))  # Sets height size for the table
+        col_width = int(self.screenWidth / 8)   # Sets width of columns for the table
 
         # Configures the style of the tree headings
         self.style.configure("Treeview.Heading", font=(None, 32))
@@ -49,16 +50,20 @@ class Flight2:
         self.style.configure("W.TLabel", foreground="Black")
         self.style.configure("Vertical.TScrollbar", troughcolor="Dim Grey")
 
+        # Allows the window to have two tabs
         self.notebook = ttk.Notebook(self.master, height=self.screenHeight, width=self.screenWidth)
 
+        # Frames are used to create the tabs
         self.tab1 = tk.Frame(self.notebook)
         self.tab2 = tk.Frame(self.notebook)
 
         self.tab2.configure(bg="Dim Grey")
 
+        # Adds and names the tabs
         self.notebook.add(self.tab1, text="Data")
         self.notebook.add(self.tab2, text="Table")
 
+        # Frames within the tabs
         self.leftData = tk.Frame(self.tab1, height=self.screenHeight, width=self.screenWidth/2)
         self.rightData = tk.Frame(self.tab1, height=self.screenHeight, width=self.screenWidth/2)
 
@@ -85,11 +90,13 @@ class Flight2:
         self.tree.heading("seven", text="CDA 3", anchor=tk.CENTER)
 
         # Carlos
-        # Configuration of Data appearance
-        self.dataNum, self.altP, self.tP, self.tP2 = tk.StringVar(), tk.StringVar(), tk.StringVar(), tk.StringVar()
+        self.dataNum = 0
+        self.altP, self.tP, self.tP2 = tk.StringVar(), tk.StringVar(), tk.StringVar()
+        self.tP3, self.tP4, self.tP5 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
 
+        # Configuration of Data appearance with all previously created components
         self.timeLabel = ttk.Label(self.leftData, text="Time:", font=self.labelFont, style="G.TLabel", anchor=tk.CENTER)
         self.timeVar = ttk.Label(self.leftData, textvariable=self.tP, font=self.labelFont, style="W.TLabel")
 
@@ -97,19 +104,19 @@ class Flight2:
         self.cdaDeployVar1 = ttk.Label(self.leftData, textvariable=self.cda_D1, font=self.labelFont, style="W.TLabel")
         self.timeLabelC1 = ttk.Label(self.leftData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                      anchor=tk.E)
-        self.timeVarC1 = ttk.Label(self.leftData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
+        self.timeVarC1 = ttk.Label(self.leftData, textvariable=self.tP3, font=self.labelFont2, style="Y.TLabel")
 
         self.cdaDeploy2 = ttk.Label(self.leftData, text="CDA 2:", font=self.labelFont, style="B.TLabel")
         self.cdaDeployVar2 = ttk.Label(self.leftData, textvariable=self.cda_D2, font=self.labelFont, style="W.TLabel")
         self.timeLabelC2 = ttk.Label(self.leftData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                      anchor=tk.E)
-        self.timeVarC2 = ttk.Label(self.leftData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
+        self.timeVarC2 = ttk.Label(self.leftData, textvariable=self.tP4, font=self.labelFont2, style="Y.TLabel")
 
         self.cdaDeploy3 = ttk.Label(self.leftData, text="CDA 3:", font=self.labelFont, style="B.TLabel")
         self.cdaDeployVar3 = ttk.Label(self.leftData, textvariable=self.cda_D3, font=self.labelFont, style="W.TLabel")
         self.timeLabelC3 = ttk.Label(self.leftData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                      anchor=tk.E)
-        self.timeVarC3 = ttk.Label(self.leftData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
+        self.timeVarC3 = ttk.Label(self.leftData, textvariable=self.tP5, font=self.labelFont2, style="Y.TLabel")
 
         self.altitude = ttk.Label(self.rightData, text="Altitude:", font=self.labelFont, style="G.TLabel")
         self.altitudeVar = ttk.Label(self.rightData, textvariable=self.altP, font=self.labelFont, style="W.TLabel")
@@ -131,10 +138,7 @@ class Flight2:
 
         # Arduino variables
         self.arduinoData = ""
-        self.cda_altitude = -1
-        self.cda2_altitude = -1
-        self.water_altitude = -1
-        self.shelter_altitude = -1
+
 
         # Time variables
         self.hour = 0
@@ -146,14 +150,18 @@ class Flight2:
         self.strTime = ""
         self.strTime2 = ""
 
+        # Function to display tabs
         self.notebook.pack()
 
+        # Process to arrange sizing for rows and columns
         col_count, row_count = self.master.grid_size()
         for col in range(col_count):
             self.master.grid_columnconfigure(col, minsize=5)
         for row in range(row_count):
             self.master.grid_rowconfigure(row, minsize=5)
 
+        # All grids necessary for GUI display
+        # sticky is use to fix coordinates to desired location
         self.leftData.grid(row=0, column=0)
         self.rightData.grid(row=0, column=1)
 
@@ -199,8 +207,6 @@ class Flight2:
         self.scrollbar.pack(fill=tk.Y, side=tk.RIGHT)
         # positions the scrollbar at the right (sticky = coordinates)
 
-        # runs the arduino function
-        # self.ard_data()
 
     def real_time(self):
         # Jorge
@@ -220,13 +226,16 @@ class Flight2:
 
         self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
         self.strTime2 = "  " + self.hTime + ":" + self.mTime + ":" + self.second  # for the position of smaller times
-        self.tP.set(self.strTime)
-        self.tP2.set(self.strTime2)
+        if self.arduinoData[1] == " 0":
+            self.tP2.set(self.strTime2)
+        if self.arduinoData[2] == " 0":
+            self.tP3.set(self.strTime2)
 
     # Jorge
     def table(self):
+        # Call of handle_click function when left click is pressed
         self.tree.bind('<Button-1>', self.handle_click)
-        # Inserts the number of data and current time to tree
+        # Inserts the number of data and current time to tree with StringVar variables previously initialized
         self.tree.insert("", tk.END, text=self.dataNum.get(), values=(self.strTime, self.altP.get(),
                                                                       self.water_D.get(), self.shelter_D.get(),
                                                                       self.cda_D1.get(), self.cda_D2.get(),
@@ -236,6 +245,14 @@ class Flight2:
 
     # Function to receive data from Arduino and set variables
     def ard_data(self):
+        # Connects to port where antenna is currently connected
+        #self.serial = Serial("dev/cu.usbserial-DN05KFL5", 9600)
+        """ While loop is used to iterate infinitely to keep receiving data from arduino.
+        Try is used to WAIT until signal from arduino is received. If no signal is received the if condition is met. 
+        If the 'message' varible is 0, then it breaks out of the loop and the function is called again
+        in the 'after' function that is outside of the while loop
+        When a signal is received the 'message' variable changes from 0 to 1 and the else condition is met.
+        """
         while True:
             try:
                 message = self.serial.inWaiting()
@@ -247,14 +264,16 @@ class Flight2:
                 time.sleep(1)
                 break
             else:
-                self.arduinoData = self.serial.readline()
+                self.arduinoData = self.serial.readline() # Function that reads data sent from arduino
                 self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
-                self.arduinoData = str(self.arduinoData)
+                self.arduinoData = str(self.arduinoData) # Converts the data from arduino to string
                 self.arduinoData = self.arduinoData.split(",")
                 #self.dataNum.set(self.arduinoData[0])
+                # Set the value to the variables that will be displayed on the GUI with the data from arduino
+                self.dataNum += 1
                 self.altP.set(self.arduinoData[0])
                 self.water_D.set(self.arduinoData[1])
-                self.shelter_D.set(self.arduinoData[2])
+                self.shelter_D.set(self.arduinoData[1])
                 #self.cda_D1.set(self.arduinoData[4])
                 #self.cda_D2.set(self.arduinoData[5])
 
@@ -273,4 +292,5 @@ class Flight2:
 
 root = Flight2(tk.Tk())
 root.master.after(1000, root.ard_data)
+# root.arduinoData
 root.master.mainloop()
