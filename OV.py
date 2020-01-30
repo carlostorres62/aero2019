@@ -287,7 +287,7 @@ class Flight2:
         self.csv_data = [self.arduinoData[0], self.arduinoData[1], self.arduinoData[2]]
         with open('backup.csv', 'a', newline="") as csvFile:  #
             writer = csv.writer(csvFile)  # Creates csv file.
-            writer.writerow(self.csv_data)  
+            writer.writerow(self.csv_data)
         csvFile.close()
 
         # Jorge
