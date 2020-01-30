@@ -11,7 +11,7 @@ class Flight2:
     def __init__(self, master):
 
         # Arduino configuration
-        self.serial = Serial("/dev/cu.usbserial-DN05KFL5", 9600)
+        self.serial = Serial("/dev/cu.usbmodem143401", 9600)
 
         # Standard configuration
         self.master = master
@@ -148,7 +148,7 @@ class Flight2:
         self.strTime = ""
         self.strTime2 = ""
 
-        #Variable to store backup csv array
+        # Variable to store backup csv array
         self.csv_data = []
 
         # Function to display tabs
@@ -281,14 +281,13 @@ class Flight2:
                 self.real_time()
                 self.table()
 
-                print("ard data")
-        self.master.after(100, self.ard_data)
+                self.csv_data = [self.dataNum, self.arduinoData[0], self.arduinoData[1], self.arduinoData[2]]
+                with open('backup.csv', 'a', newline="") as csvFile:
+                    writer = csv.writer(csvFile)  # Creates csv file.
+                    writer.writerow(self.csv_data)
+                csvFile.close()
 
-        self.csv_data = [self.arduinoData[0], self.arduinoData[1], self.arduinoData[2]]
-        with open('backup.csv', 'a', newline="") as csvFile:  #
-            writer = csv.writer(csvFile)  # Creates csv file.
-            writer.writerow(self.csv_data)
-        csvFile.close()
+        self.master.after(100, self.ard_data)
 
         # Jorge
     def handle_click(self, event):  # Function to prevent resize on the headings
@@ -297,6 +296,6 @@ class Flight2:
 
 
 root = Flight2(tk.Tk())
-root.master.after(1000, root.ard_data)
-# root.arduinoData
+# root.master.after(1000, root.ard_data)
+root.ard_data()
 root.master.mainloop()
