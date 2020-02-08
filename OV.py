@@ -11,7 +11,10 @@ class Flight2:
     def __init__(self, master):
 
         # Arduino configuration
-        self.port = "/dev/cu.usbmodem14201"
+        # "/dev/cu.usbserial-DN05KFL5"
+        # "/dev/cu.usbmodem14201"
+        # "COM6" or "COM10"
+        self.port = "/dev/cu.usbserial-DN05KFL5"
         self.serial = Serial(self.port, 9600)
 
         # Standard configuration
