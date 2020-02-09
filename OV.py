@@ -14,6 +14,8 @@ class Flight2:
         # "/dev/cu.usbserial-DN05KFL5"
         # "/dev/cu.usbmodem14201"
         # "COM6" or "COM10"
+        # CDAs should be connected in Arduino in pins 2 and 3
+        # Water and Habitat (Shelter) should be connected in pins 4 and 5
         self.port = "/dev/cu.usbserial-DN05KFL5"
         self.serial = Serial(self.port, 9600)
 
