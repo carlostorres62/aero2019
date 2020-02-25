@@ -101,7 +101,6 @@ class Flight2:
         self.altP, self.tP, self.tP2, self.tP3 = tk.StringVar(), tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
-        self.gate, self.close = tk.StringVar(), tk.StringVar()
 
         # Configuration of Data appearance with all previously created components
         self.timeLabel = ttk.Label(self.leftData, text="Time:", font=self.labelFont, style="G.TLabel", anchor=tk.CENTER)
@@ -142,9 +141,6 @@ class Flight2:
         self.timeLabelS = ttk.Label(self.rightData, text="Deploy Time:", font=self.labelFont2, style="R.TLabel",
                                     anchor=tk.E)
         self.timeVarS = ttk.Label(self.rightData, textvariable=self.tP2, font=self.labelFont2, style="Y.TLabel")
-
-        self.gateVar = ttk.Label(self.rightData, textvariable=self.gate, font=self.labelFont3, style="Y.TLabel")
-        self.closeVar = ttk.Label(self.rightData, textvariable=self.close, font=self.labelFont3, style="Y.TLabel")
 
         # Arduino variables
         self.arduinoData = ""
@@ -207,9 +203,6 @@ class Flight2:
         self.timeLabelS.grid(row=4, column=2, sticky=tk.W+tk.E)
         self.timeVarS.grid(row=4, column=3, sticky=tk.W+tk.E)
 
-        self.gateVar.grid(row=5, column=2, sticky=tk.E)
-        self.closeVar.grid(row=5, column=3, sticky=tk.W)
-
         # David
         # Configuration of scrollbar
         self.tree.column("#0", anchor=tk.CENTER, width=col_width - 25)
@@ -243,9 +236,6 @@ class Flight2:
         self.tP.set(self.strTime)
         if self.arduinoData[1] == "0":
             self.tP2.set(self.strTime2)
-        else:
-            self.gate.set("Gate ")
-            self.close.set("Closed")
         if self.arduinoData[2] == "0":
             self.tP3.set(self.strTime2)
 
@@ -271,6 +261,7 @@ class Flight2:
         When a signal is received the 'message' variable changes from 0 to 1 and the else condition is met.
         """
         while True:
+            message = 0
             try:
                 message = self.serial.inWaiting()
             except:
