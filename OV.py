@@ -16,14 +16,13 @@ class Flight2:
         # "COM6" or "COM10"
         # CDAs should be connected in Arduino in pins 2 and 3
         # Water and Habitat (Shelter) should be connected in pins 4 and 5
-        self.port = "/dev/cu.usbserial-DN05KFL5"
+        self.port = "COM11"
         self.serial = Serial(self.port, 9600)
 
         # Standard configuration
         self.master = master
         self.master.title("Aero Design")
         self.master.state('zoomed')   # Sets the GUI to be full screen
-        self.master.configure(background="Dim Grey")
 
         self.screenHeight = self.master.winfo_screenheight()  # Sets the height and width of the GUI to the
         self.screenWidth = self.master.winfo_screenwidth()    # height and width of corresponding computer screen
@@ -42,17 +41,17 @@ class Flight2:
 
         # Configures the style of the tree headings
         self.style.configure("Treeview.Heading", font=(None, 32))
-        self.style.configure("Treeview", font=(None, 28), rowheight=40, fieldbackground="Dim Grey")
+        self.style.configure("Treeview", font=(None, 28), rowheight=40, fieldbackground="White")
 
         # Configures the style of the tabs
         self.style.configure("TNotebook.Tab", font=("Helvetica", 20))
-        self.style.configure("TNotebook", background="Dim Grey")
+        self.style.configure("TNotebook", background="Light Grey")
 
         # Configures the background and font colors
-        self.style.configure("TLabel", background="Dim Grey")
+        self.style.configure("TLabel", background="White")
         self.style.configure("B.TLabel", foreground="Blue")
         self.style.configure("R.TLabel", foreground="Red")
-        self.style.configure("G.TLabel", foreground="Dark Green")
+        self.style.configure("G.TLabel", foreground="Green")
         self.style.configure("Y.TLabel", foreground="Gold")
         self.style.configure("W.TLabel", foreground="Black")
         self.style.configure("Vertical.TScrollbar", troughcolor="Dim Grey")
@@ -64,7 +63,7 @@ class Flight2:
         self.tab1 = tk.Frame(self.notebook)
         self.tab2 = tk.Frame(self.notebook)
 
-        self.tab2.configure(bg="Dim Grey")
+        self.tab2.configure(bg="White")
 
         # Adds and names the tabs
         self.notebook.add(self.tab1, text="Data")
@@ -74,8 +73,8 @@ class Flight2:
         self.leftData = tk.Frame(self.tab1, height=self.screenHeight, width=self.screenWidth/2)
         self.rightData = tk.Frame(self.tab1, height=self.screenHeight, width=self.screenWidth/2)
 
-        self.leftData.configure(bg="Dim Grey")
-        self.rightData.configure(bg="Dim Grey")
+        self.leftData.configure(bg="White")
+        self.rightData.configure(bg="White")
         self.leftData.grid_propagate(False)
         self.rightData.grid_propagate(False)
 
@@ -98,6 +97,8 @@ class Flight2:
 
         # Carlos
         self.dataNum = 0
+        self.altCount = 0
+        self.altList = []
         self.altP, self.tP, self.tP2, self.tP3 = tk.StringVar(), tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.cda_D1, self.cda_D2, self.cda_D3 = tk.StringVar(), tk.StringVar(), tk.StringVar()
         self.water_D, self.shelter_D = tk.StringVar(), tk.StringVar()
@@ -234,9 +235,9 @@ class Flight2:
         self.strTime = self.hTime + ":" + self.mTime + ":" + self.second
         self.strTime2 = "  " + self.hTime + ":" + self.mTime + ":" + self.second  # for the position of smaller times
         self.tP.set(self.strTime)
-        if self.arduinoData[1] == "0":
-            self.tP2.set(self.strTime2)
         if self.arduinoData[2] == "0":
+            self.tP2.set(self.strTime2)
+        if self.arduinoData[1] == "0":
             self.tP3.set(self.strTime2)
 
     # Jorge
@@ -272,18 +273,32 @@ class Flight2:
                 time.sleep(1)
                 break
             else:
-                self.arduinoData = self.serial.readline() # Function that reads data sent from arduino
+                self.arduinoData = self.serial.readline()  # Function that reads data sent from arduino
                 self.arduinoData = self.arduinoData.decode().rstrip()  # remove b' and /r/n'
-                self.arduinoData = str(self.arduinoData) # Converts the data from arduino to string
+                self.arduinoData = str(self.arduinoData)  # Converts the data from arduino to string
                 self.arduinoData = self.arduinoData.split(",")
                 # Set the value to the variables that will be displayed on the GUI with the data from arduino
                 self.dataNum += 1
-                self.altP.set(self.arduinoData[0])
-                self.water_D.set(self.arduinoData[1])
-                self.shelter_D.set(self.arduinoData[1])
-                self.cda_D1.set(self.arduinoData[2])
-                self.cda_D2.set(self.arduinoData[2])
-                self.cda_D3.set(self.arduinoData[2])
+                if float(self.arduinoData[0]) < 0 or float(self.arduinoData[0]) > 300:
+                    for alts in self.altList:
+                        self.altCount += float(alts)
+                    self.altP.set(round(self.altCount/5, 2))
+                    self.altCount = 0
+                else:
+                    if len(self.altList) < 5:
+                        self.altList.append(float(self.arduinoData[0]))
+                    else:
+                        self.altList[0] = self.altList[1]
+                        self.altList[1] = self.altList[2]
+                        self.altList[2] = self.altList[3]
+                        self.altList[3] = self.altList[4]
+                        self.altList[4] = self.arduinoData[0]
+                    self.altP.set(self.arduinoData[0])
+                self.water_D.set(self.arduinoData[2])
+                self.shelter_D.set(self.arduinoData[2])
+                self.cda_D1.set(self.arduinoData[1])
+                self.cda_D2.set(self.arduinoData[1])
+                self.cda_D3.set(self.arduinoData[1])
 
                 print(self.arduinoData)
                 self.real_time()
